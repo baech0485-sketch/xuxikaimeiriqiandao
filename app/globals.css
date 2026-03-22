@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
+
+:root {
+  --candy-pink: #E8A0B4;
+  --candy-blue: #8CBFD6;
+  --candy-yellow: #E8D48A;
+  --candy-mint: #8BC5A0;
+  --candy-purple: #B8A0D6;
+  --candy-orange: #DDB880;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', cursive, sans-serif;
+  min-height: 100vh;
+  user-select: none;
+  overflow-x: hidden;
+  background: #EDF3F0;
+}
+
+/* ============ 按钮 ============ */
+.btn-kid {
+  @apply px-8 py-4 rounded-2xl text-xl font-bold transition-all duration-200 active:scale-95;
+  min-height: 52px;
+  min-width: 52px;
+  letter-spacing: 0.02em;
+}
+
+/* ============ 卡片 ============ */
+.card-kid {
+  @apply rounded-3xl p-5;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04), 0 0 0 1px rgba(255,255,255,0.7) inset;
+}
+
+/* ============ 场景背景（柔和护眼） ============ */
+.scene-bg {
+  background: linear-gradient(180deg, #D6E8F0 0%, #E2EEE8 40%, #E8F0E2 70%, #D6EDDE 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* ============ 隐藏滚动条 ============ */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ============ 进度条 ============ */
+.progress-bar-track {
+  @apply rounded-full overflow-hidden;
+  background: rgba(255,255,255,0.5);
+  height: 10px;
+}
+
+.progress-bar-fill {
+  @apply rounded-full h-full transition-all duration-700 ease-out;
+  background: linear-gradient(90deg, #B8D8A8, #8CBFD6, #B8A0D6);
+}
+
+/* ============ 装饰云朵 ============ */
+.cloud {
+  position: fixed;
+  color: white;
+  opacity: 0.35;
+  font-size: 2.5rem;
+  pointer-events: none;
+  z-index: 1;
+  filter: blur(1px);
+}
+
+/* ============ 任务卡片彩色条 ============ */
+.task-stripe {
+  width: 5px;
+  border-radius: 3px;
+  min-height: 100%;
+}

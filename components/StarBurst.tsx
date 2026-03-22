@@ -1,0 +1,71 @@
+'use client'
+
+import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect } from 'react'
+
+interface StarBurstProps {
+  show: boolean
+  onComplete: () => void
+}
+
+const PARTICLES = Array.from({ length: 16 }).map((_, i) => ({
+  angle: (i / 16) * Math.PI * 2,
+  distance: 100 + Math.random() * 80,
+  emoji: ['⭐', '🌟', '✨', '💫', '🎉', '💖'][i % 6],
+  delay: i * 0.03,
+}))
+
+export default function StarBurst({ show, onComplete }: StarBurstProps) {
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(onComplete, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [show, onComplete])
+
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div className="absolute inset-0 bg-black/10 backdrop-blur-sm" />
+
+          {PARTICLES.map((p, i) => (
+            <motion.span
+              key={i}
+              className="absolute pointer-events-none text-xl opacity-70"
+              initial={{ x: 0, y: 0, opacity: 0.7, scale: 0 }}
+              animate={{
+                x: Math.cos(p.angle) * p.distance,
+                y: Math.sin(p.angle) * p.distance,
+                opacity: [0.7, 0.5, 0],
+                scale: [0, 1.2, 0.3],
+                rotate: Math.random() * 360,
+              }}
+              transition={{ duration: 1.6, delay: p.delay, ease: 'easeOut' }}
+            >
+              {p.emoji}
+            </motion.span>
+          ))}
+
+          <motion.div
+            className="relative z-10 text-center"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 250, damping: 15, delay: 0.1 }}
+          >
+            <p className="text-5xl mb-3">🏆</p>
+            <div className="bg-white/92 backdrop-blur rounded-3xl px-8 py-5 shadow-kid-lg">
+              <p className="text-2xl font-bold text-gray-600">太棒了！</p>
+              <p className="text-sm text-gray-400 mt-1.5">今日全部完成！⭐ +1</p>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}
