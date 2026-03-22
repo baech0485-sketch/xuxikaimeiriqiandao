@@ -25,7 +25,7 @@ interface PetDisplayProps {
 const moodAnimations = {
   happy: {
     animate: { y: [0, -10, 0], rotate: [0, 1.5, 0, -1.5, 0] },
-    transition: { repeat: Infinity, duration: 2.5, ease: 'easeInOut' },
+    transition: { repeat: Infinity, duration: 2.5, ease: 'easeInOut' as const },
   },
   hungry: {
     animate: { x: [-2, 2, -2, 0] },
@@ -33,7 +33,7 @@ const moodAnimations = {
   },
   sad: {
     animate: { y: [0, 3, 0], opacity: [1, 0.75, 1], scale: [1, 0.97, 1] },
-    transition: { repeat: Infinity, duration: 3, ease: 'easeInOut' },
+    transition: { repeat: Infinity, duration: 3, ease: 'easeInOut' as const },
   },
   runaway: {
     animate: { opacity: 0, scale: 0 },
