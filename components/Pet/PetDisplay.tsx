@@ -331,7 +331,7 @@ export default function PetDisplay({
         >
           <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-white/90" />
           <p className="text-xs text-center text-gray-500">
-            {isTapped ? '嘻嘻~好痒呀！' : isEating ? '好好吃呀~真幸福！' : moodInfo.message}
+            {isTapped ? '嘻嘻~好痒呀！' : isEating ? '好好吃呀~谢谢你喂我！' : moodInfo.message}
           </p>
         </motion.div>
       )}

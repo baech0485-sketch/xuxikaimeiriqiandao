@@ -21,8 +21,8 @@ export const TASKS = [
 export type TaskKey = typeof TASKS[number]['key']
 
 export const PET_MOODS = {
-  happy: { label: '开心', message: '好开心！谢谢你喂我~', color: '#7BA88E' },
-  hungry: { label: '饿了', message: '我饿了~快来喂我吧！', color: '#C4A060' },
+  happy: { label: '开心', message: '完成任务给我喂吃的哦~', color: '#7BA88E' },
+  hungry: { label: '饿了', message: '我饿了~快完成任务喂我吧！', color: '#C4A060' },
   sad: { label: '伤心', message: '你是不是忘了我...', color: '#A0A0A0' },
   runaway: { label: '出走', message: '你的宠物离家出走了...', color: '#C08080' },
 } as const
