@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose'
 export interface IUser extends Document {
   name: string
   avatar: string
+  birthday: string
   pet: {
     type: string
     name: string
@@ -22,6 +23,7 @@ export interface IUser extends Document {
 const UserSchema = new Schema<IUser>({
   name: { type: String, required: true },
   avatar: { type: String, default: 'boy1' },
+  birthday: { type: String, default: '' },
   pet: {
     type: { type: String, required: true },
     name: { type: String, required: true },

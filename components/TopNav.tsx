@@ -79,6 +79,12 @@ export default function TopNav({ totalStars, streak, childName, starBounce }: To
             >
               📅
             </a>
+            <a
+              href="/growth"
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-candy-pink-light/80 to-candy-yellow-light/50 flex items-center justify-center text-xl shadow-kid hover:shadow-kid-lg hover:scale-105 active:scale-95 transition-all"
+            >
+              📏
+            </a>
             <button
               onClick={toggleFullscreen}
               className="w-12 h-12 rounded-2xl bg-gradient-to-br from-candy-purple-light/60 to-candy-mint-light/50 flex items-center justify-center shadow-kid hover:shadow-kid-lg hover:scale-105 active:scale-95 transition-all"
