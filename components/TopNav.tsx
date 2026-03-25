@@ -21,7 +21,10 @@ export default function TopNav({ totalStars, streak, childName }: TopNavProps) {
                 小宠伴学
               </h1>
               {childName && (
-                <p className="text-xs text-gray-400 leading-tight mt-0.5">{childName}的小天地</p>
+                <p className="text-xs text-gray-400 leading-tight mt-0.5">
+                  <span className="text-sm font-bold bg-gradient-to-r from-candy-orange to-candy-pink bg-clip-text text-transparent">{childName}</span>
+                  <span className="ml-0.5">的小天地</span>
+                </p>
               )}
             </div>
           </div>
