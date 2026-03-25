@@ -1,5 +1,7 @@
 'use client'
 
+import { useState, useCallback, useEffect } from 'react'
+
 interface TopNavProps {
   totalStars: number
   streak: number
@@ -7,6 +9,31 @@ interface TopNavProps {
 }
 
 export default function TopNav({ totalStars, streak, childName }: TopNavProps) {
+  const [isFullscreen, setIsFullscreen] = useState(false)
+
+  useEffect(() => {
+    const onChange = () => setIsFullscreen(!!document.fullscreenElement)
+    document.addEventListener('fullscreenchange', onChange)
+    document.addEventListener('webkitfullscreenchange', onChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', onChange)
+      document.removeEventListener('webkitfullscreenchange', onChange)
+    }
+  }, [])
+
+  const toggleFullscreen = useCallback(() => {
+    if (document.fullscreenElement) {
+      document.exitFullscreen?.()
+    } else {
+      const el = document.documentElement as HTMLElement & { webkitRequestFullscreen?: () => void }
+      if (el.requestFullscreen) {
+        el.requestFullscreen()
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen()
+      }
+    }
+  }, [])
+
   return (
     <header className="sticky top-0 z-30 px-4 py-2.5">
       <div className="max-w-5xl mx-auto">
@@ -45,6 +72,28 @@ export default function TopNav({ totalStars, streak, childName }: TopNavProps) {
             >
               📅
             </a>
+            <button
+              onClick={toggleFullscreen}
+              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-candy-purple-light/60 to-candy-mint-light/50 flex items-center justify-center shadow-kid hover:shadow-kid-lg hover:scale-105 active:scale-95 transition-all"
+              style={{ touchAction: 'manipulation' }}
+              title={isFullscreen ? '退出全屏' : '全屏模式'}
+            >
+              {isFullscreen ? (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+                  <path d="M8 3v3a2 2 0 0 1-2 2H3" />
+                  <path d="M21 8h-3a2 2 0 0 1-2-2V3" />
+                  <path d="M3 16h3a2 2 0 0 1 2 2v3" />
+                  <path d="M16 21v-3a2 2 0 0 1 2-2h3" />
+                </svg>
+              ) : (
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3" />
+                  <path d="M21 8V5a2 2 0 0 0-2-2h-3" />
+                  <path d="M3 16v3a2 2 0 0 0 2 2h3" />
+                  <path d="M16 21h3a2 2 0 0 0 2-2v-3" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
       </div>
