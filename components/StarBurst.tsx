@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useEffect } from 'react'
+import { playCelebrationSound } from '@/lib/sounds'
 
 interface StarBurstProps {
   show: boolean
@@ -18,6 +19,7 @@ const PARTICLES = Array.from({ length: 16 }).map((_, i) => ({
 export default function StarBurst({ show, onComplete }: StarBurstProps) {
   useEffect(() => {
     if (show) {
+      playCelebrationSound()
       const timer = setTimeout(onComplete, 3000)
       return () => clearTimeout(timer)
     }

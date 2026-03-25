@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCallback } from 'react'
+import { playCompleteSound } from '@/lib/sounds'
 
 interface ConfirmDialogProps {
   show: boolean
@@ -15,6 +16,7 @@ export default function ConfirmDialog({ show, taskEmoji, taskName, onConfirm, on
   const handleConfirm = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault()
     e.stopPropagation()
+    playCompleteSound()
     onConfirm()
   }, [onConfirm])
 
