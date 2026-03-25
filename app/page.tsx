@@ -12,6 +12,7 @@ import TopNav from '@/components/TopNav'
 import WeekCalendar from '@/components/WeekCalendar'
 import StarBurst from '@/components/StarBurst'
 import ConfirmDialog from '@/components/ConfirmDialog'
+import { playCollectSound } from '@/lib/sounds'
 
 interface UserData {
   _id: string
@@ -34,6 +35,8 @@ export default function Home() {
   const [showCelebration, setShowCelebration] = useState(false)
   const [confirmTask, setConfirmTask] = useState<typeof TASKS[number] | null>(null)
   const [feedingAnim, setFeedingAnim] = useState(false)
+  const [flyingHeart, setFlyingHeart] = useState<{ sx: number; sy: number; tx: number; ty: number } | null>(null)
+  const [starBounce, setStarBounce] = useState(false)
 
   const loadData = useCallback(async () => {
     try {
@@ -72,6 +75,24 @@ export default function Home() {
     setTimeout(() => setFeedingAnim(false), 2000)
   }
 
+  const handleCollectStar = useCallback((sourceRect: DOMRect) => {
+    const target = document.getElementById('star-counter')
+    if (!target) return
+    const targetRect = target.getBoundingClientRect()
+    playCollectSound()
+    setFlyingHeart({
+      sx: sourceRect.left + sourceRect.width / 2,
+      sy: sourceRect.top + sourceRect.height / 2,
+      tx: targetRect.left + targetRect.width / 2,
+      ty: targetRect.top + targetRect.height / 2,
+    })
+    setTimeout(() => {
+      setStarBounce(true)
+      setFlyingHeart(null)
+      setTimeout(() => setStarBounce(false), 600)
+    }, 650)
+  }, [])
+
   if (loading) {
     return (
       <main className="scene-bg flex items-center justify-center">
@@ -100,7 +121,7 @@ export default function Home() {
       <div className="cloud top-28 animate-slide-cloud-2" style={{ animationDelay: '-15s', fontSize: '2rem', opacity: 0.15 }}>☁️</div>
 
       <div className="relative z-10">
-        <TopNav totalStars={user.stats.totalStars} streak={user.stats.streak} childName={user.name} />
+        <TopNav totalStars={user.stats.totalStars} streak={user.stats.streak} childName={user.name} starBounce={starBounce} />
 
         <div className="max-w-5xl mx-auto px-4 pt-3">
           {/* 进度条 */}
@@ -214,7 +235,7 @@ export default function Home() {
 
           {/* 底部周历 */}
           <div className="mt-5">
-            <WeekCalendar refreshKey={completedCount} />
+            <WeekCalendar refreshKey={completedCount} onCollectStar={handleCollectStar} />
           </div>
         </div>
       </div>
@@ -227,6 +248,34 @@ export default function Home() {
         onCancel={() => setConfirmTask(null)}
       />
       <StarBurst show={showCelebration} onComplete={() => setShowCelebration(false)} />
+
+      {/* 飞行心收集动画 */}
+      <AnimatePresence>
+        {flyingHeart && (
+          <motion.div
+            className="fixed z-50 pointer-events-none"
+            style={{ left: flyingHeart.sx, top: flyingHeart.sy }}
+            initial={{ scale: 1, x: 0, y: 0, opacity: 1 }}
+            animate={{
+              x: flyingHeart.tx - flyingHeart.sx,
+              y: flyingHeart.ty - flyingHeart.sy,
+              scale: [1, 1.5, 0.6],
+              opacity: [1, 1, 0.8],
+            }}
+            exit={{ opacity: 0, scale: 0 }}
+            transition={{ duration: 0.65, ease: [0.25, 0.1, 0.25, 1] }}
+          >
+            <motion.span
+              className="text-2xl block"
+              style={{ marginLeft: -14, marginTop: -14 }}
+              animate={{ rotate: [0, -15, 15, 0] }}
+              transition={{ duration: 0.65 }}
+            >
+              💖
+            </motion.span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   )
 }

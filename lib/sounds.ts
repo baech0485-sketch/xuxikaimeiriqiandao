@@ -64,3 +64,14 @@ export function playPetTapSound() {
     tone(1175, 0.12, t + 0.06, 0.12, 'triangle') // D6 尾音
   } catch { /* 静默降级 */ }
 }
+
+/** 收集星星音：上扬滑音 + 叮 */
+export function playCollectSound() {
+  try {
+    const ctx = getCtx()
+    const t = ctx.currentTime
+    tone(659, 0.1, t, 0.18, 'sine')        // E5
+    tone(880, 0.1, t + 0.08, 0.18, 'sine') // A5
+    tone(1175, 0.2, t + 0.16, 0.22, 'triangle') // D6 叮
+  } catch { /* 静默降级 */ }
+}

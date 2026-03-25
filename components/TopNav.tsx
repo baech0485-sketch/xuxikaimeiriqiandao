@@ -1,14 +1,16 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
+import { motion } from 'framer-motion'
 
 interface TopNavProps {
   totalStars: number
   streak: number
   childName?: string
+  starBounce?: boolean
 }
 
-export default function TopNav({ totalStars, streak, childName }: TopNavProps) {
+export default function TopNav({ totalStars, streak, childName, starBounce }: TopNavProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
@@ -58,10 +60,15 @@ export default function TopNav({ totalStars, streak, childName }: TopNavProps) {
 
           {/* 右侧统计区 */}
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 bg-gradient-to-br from-candy-yellow-light/80 to-candy-yellow-light/40 px-4 py-2 rounded-2xl shadow-kid">
+            <motion.div
+              id="star-counter"
+              className="flex items-center gap-1.5 bg-gradient-to-br from-candy-yellow-light/80 to-candy-yellow-light/40 px-4 py-2 rounded-2xl shadow-kid"
+              animate={starBounce ? { scale: [1, 1.3, 0.9, 1.15, 1] } : {}}
+              transition={starBounce ? { duration: 0.5, ease: 'easeOut' } : {}}
+            >
               <span className="text-lg">⭐</span>
               <span className="font-bold text-amber-600 text-base">{totalStars}</span>
-            </div>
+            </motion.div>
             <div className="flex items-center gap-1.5 bg-gradient-to-br from-candy-orange-light/80 to-candy-orange-light/40 px-4 py-2 rounded-2xl shadow-kid">
               <span className="text-lg">🔥</span>
               <span className="font-bold text-orange-500 text-base">{streak}天</span>

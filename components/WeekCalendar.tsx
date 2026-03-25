@@ -46,8 +46,9 @@ function getWeekDates(mondayStr: string): string[] {
   return dates
 }
 
-export default function WeekCalendar({ refreshKey }: { refreshKey?: number }) {
+export default function WeekCalendar({ refreshKey, onCollectStar }: { refreshKey?: number; onCollectStar?: (rect: DOMRect) => void }) {
   const [records, setRecords] = useState<DayRecord[]>([])
+  const [collected, setCollected] = useState<Set<string>>(new Set())
 
   const today = useMemo(() => getBeijingToday(), [])
   const mondayStr = useMemo(() => getMondayDate(today), [today])
@@ -147,31 +148,52 @@ export default function WeekCalendar({ refreshKey }: { refreshKey?: number }) {
                 {/* 达标状态 - 渐变圆 + 星星 */}
                 {isFull && (
                   <motion.div
-                    className="relative"
+                    className={`relative ${collected.has(day.date) ? '' : 'cursor-pointer'}`}
                     initial={{ scale: 0, rotate: -15 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 15, delay: idx * 0.05 }}
+                    onClick={(e) => {
+                      if (collected.has(day.date) || !onCollectStar) return
+                      const rect = e.currentTarget.getBoundingClientRect()
+                      setCollected(prev => new Set(prev).add(day.date))
+                      onCollectStar(rect)
+                    }}
+                    style={{ touchAction: 'manipulation' }}
                   >
-                    {/* 柔和外发光 */}
+                    {/* 柔和外发光 - 未收集时脉动提示 */}
                     <motion.div
                       className="absolute -inset-1.5 rounded-full bg-gradient-to-br from-candy-yellow/25 to-candy-mint/30 blur-md"
-                      animate={{ opacity: [0.4, 0.75, 0.4], scale: [0.95, 1.08, 0.95] }}
-                      transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+                      animate={collected.has(day.date)
+                        ? { opacity: 0.3, scale: 1 }
+                        : { opacity: [0.4, 0.75, 0.4], scale: [0.95, 1.08, 0.95] }
+                      }
+                      transition={collected.has(day.date)
+                        ? {}
+                        : { repeat: Infinity, duration: 3, ease: 'easeInOut' }
+                      }
                     />
-                    {/* 闪光装饰 */}
-                    <motion.span
-                      className="absolute -top-1 -right-1 text-[9px] z-20 pointer-events-none"
-                      animate={{ scale: [0.5, 1.1, 0.5], opacity: [0.2, 0.85, 0.2], rotate: [0, 20, 0] }}
-                      transition={{ repeat: Infinity, duration: 2.2, delay: idx * 0.15 }}
-                    >
-                      ✨
-                    </motion.span>
+                    {/* 闪光装饰 - 未收集时闪烁 */}
+                    {!collected.has(day.date) && (
+                      <motion.span
+                        className="absolute -top-1 -right-1 text-[9px] z-20 pointer-events-none"
+                        animate={{ scale: [0.5, 1.1, 0.5], opacity: [0.2, 0.85, 0.2], rotate: [0, 20, 0] }}
+                        transition={{ repeat: Infinity, duration: 2.2, delay: idx * 0.15 }}
+                      >
+                        ✨
+                      </motion.span>
+                    )}
                     {/* 主徽章 */}
-                    <div className="relative w-11 h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-emerald-300 via-candy-mint to-teal-400 flex items-center justify-center shadow-[0_3px_14px_rgba(139,197,160,0.5)] ring-[2.5px] ring-white/70 ring-offset-0">
+                    <div className={`relative w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center ring-[2.5px] ring-white/70 ring-offset-0 transition-all ${
+                      collected.has(day.date)
+                        ? 'bg-gradient-to-br from-candy-mint/60 to-teal-300/60 shadow-[0_2px_8px_rgba(139,197,160,0.3)]'
+                        : 'bg-gradient-to-br from-emerald-300 via-candy-mint to-teal-400 shadow-[0_3px_14px_rgba(139,197,160,0.5)]'
+                    }`}>
                       {/* 玻璃高光 */}
                       <div className="absolute top-[2px] left-[15%] right-[15%] h-[38%] rounded-full bg-white/30 blur-[0.5px]" />
-                      {/* 金色星星 */}
-                      <span className="relative z-10 text-[15px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.08)]">⭐</span>
+                      {/* 图标 */}
+                      <span className="relative z-10 text-[15px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
+                        {collected.has(day.date) ? '✓' : '⭐'}
+                      </span>
                     </div>
                   </motion.div>
                 )}
