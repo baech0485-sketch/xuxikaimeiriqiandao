@@ -163,6 +163,7 @@ export default function Home() {
                     hungryDays={user.pet.hungryDays}
                     recallProgress={user.pet.recallProgress}
                     isEating={feedingAnim}
+                    riveFile={petInfo.riveFile}
                   />
 
                   <div className="flex justify-center mt-2">

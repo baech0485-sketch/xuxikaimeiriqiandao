@@ -54,3 +54,13 @@ export function playCelebrationSound() {
     tone(1319, 0.35, t + 0.35, 0.1, 'triangle')  // E6 闪光音
   } catch { /* 静默降级 */ }
 }
+
+/** 触摸宠物音：可爱的短促"咕"声 */
+export function playPetTapSound() {
+  try {
+    const ctx = getCtx()
+    const t = ctx.currentTime
+    tone(880, 0.08, t, 0.15, 'sine')       // A5 短促
+    tone(1175, 0.12, t + 0.06, 0.12, 'triangle') // D6 尾音
+  } catch { /* 静默降级 */ }
+}
