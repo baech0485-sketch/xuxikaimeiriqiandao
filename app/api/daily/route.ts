@@ -59,8 +59,6 @@ export async function POST(req: NextRequest) {
 
   if (goalReached && !record.allCompleted) {
     record.allCompleted = true
-    record.starsEarned = 1
-    user.stats.totalStars += 1
     user.stats.totalDays += 1
     user.stats.streak += 1
     if (user.stats.streak > user.stats.maxStreak) {

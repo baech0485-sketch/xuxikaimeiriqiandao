@@ -19,6 +19,7 @@ export interface IDailyRecord extends Document {
   }
   fedCount: number
   allCompleted: boolean
+  starCollected: boolean
   starsEarned: number
 }
 
@@ -41,6 +42,7 @@ const DailyRecordSchema = new Schema<IDailyRecord>({
   },
   fedCount: { type: Number, default: 0 },
   allCompleted: { type: Boolean, default: false },
+  starCollected: { type: Boolean, default: false },
   starsEarned: { type: Number, default: 0 },
 })
 

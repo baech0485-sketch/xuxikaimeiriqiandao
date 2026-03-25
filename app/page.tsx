@@ -37,6 +37,7 @@ export default function Home() {
   const [feedingAnim, setFeedingAnim] = useState(false)
   const [flyingHeart, setFlyingHeart] = useState<{ sx: number; sy: number; tx: number; ty: number } | null>(null)
   const [starBounce, setStarBounce] = useState(false)
+  const [weekRefresh, setWeekRefresh] = useState(0)
 
   const loadData = useCallback(async () => {
     try {
@@ -75,7 +76,7 @@ export default function Home() {
     setTimeout(() => setFeedingAnim(false), 2000)
   }
 
-  const handleCollectStar = useCallback((sourceRect: DOMRect) => {
+  const handleCollectStar = useCallback(async (sourceRect: DOMRect, date: string) => {
     const target = document.getElementById('star-counter')
     if (!target) return
     const targetRect = target.getBoundingClientRect()
@@ -86,9 +87,20 @@ export default function Home() {
       tx: targetRect.left + targetRect.width / 2,
       ty: targetRect.top + targetRect.height / 2,
     })
+
+    // 调 API 收集星星
+    const res = await fetch('/api/daily/collect', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date }),
+    })
+    const data = await res.json()
+    if (data.user) setUser(data.user)
+
     setTimeout(() => {
       setStarBounce(true)
       setFlyingHeart(null)
+      setWeekRefresh(prev => prev + 1)
       setTimeout(() => setStarBounce(false), 600)
     }, 650)
   }, [])
@@ -235,7 +247,7 @@ export default function Home() {
 
           {/* 底部周历 */}
           <div className="mt-5">
-            <WeekCalendar refreshKey={completedCount} onCollectStar={handleCollectStar} />
+            <WeekCalendar refreshKey={completedCount + weekRefresh} onCollectStar={handleCollectStar} />
           </div>
         </div>
       </div>

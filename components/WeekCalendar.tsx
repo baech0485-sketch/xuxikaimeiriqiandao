@@ -11,12 +11,14 @@ interface WeekDay {
   totalTasks: number
   status: 'full' | 'partial' | 'none' | 'future'
   isToday: boolean
+  starCollected: boolean
 }
 
 interface DayRecord {
   date: string
   tasks: Record<string, { done: boolean; completedAt: string | null }>
   allCompleted: boolean
+  starCollected?: boolean
 }
 
 const DAY_LABELS = ['一', '二', '三', '四', '五', '六', '日']
@@ -46,9 +48,8 @@ function getWeekDates(mondayStr: string): string[] {
   return dates
 }
 
-export default function WeekCalendar({ refreshKey, onCollectStar }: { refreshKey?: number; onCollectStar?: (rect: DOMRect) => void }) {
+export default function WeekCalendar({ refreshKey, onCollectStar }: { refreshKey?: number; onCollectStar?: (rect: DOMRect, date: string) => void }) {
   const [records, setRecords] = useState<DayRecord[]>([])
-  const [collected, setCollected] = useState<Set<string>>(new Set())
 
   const today = useMemo(() => getBeijingToday(), [])
   const mondayStr = useMemo(() => getMondayDate(today), [today])
@@ -72,11 +73,13 @@ export default function WeekCalendar({ refreshKey, onCollectStar }: { refreshKey
     const record = records.find(r => r.date === dateStr)
     let status: WeekDay['status'] = 'none'
     let doneCount = 0
+    let starCollected = false
     const totalTasks = record ? Object.keys(record.tasks || {}).length : 0
     if (dateStr > today) {
       status = 'future'
     } else if (record) {
       doneCount = Object.values(record.tasks || {}).filter((t: any) => t?.done).length
+      starCollected = !!record.starCollected
       if (record.allCompleted) {
         status = 'full'
       } else {
@@ -84,7 +87,7 @@ export default function WeekCalendar({ refreshKey, onCollectStar }: { refreshKey
       }
     }
     const dayNum = new Date(dateStr + 'T00:00:00Z').getUTCDate()
-    return { date: dateStr, label: DAY_LABELS[i], dayNum, doneCount, totalTasks, status, isToday: dateStr === today }
+    return { date: dateStr, label: DAY_LABELS[i], dayNum, doneCount, totalTasks, status, isToday: dateStr === today, starCollected }
   })
 
   const fullCount = days.filter(d => d.status === 'full').length
@@ -148,32 +151,31 @@ export default function WeekCalendar({ refreshKey, onCollectStar }: { refreshKey
                 {/* 达标状态 - 渐变圆 + 星星 */}
                 {isFull && (
                   <motion.div
-                    className={`relative ${collected.has(day.date) ? '' : 'cursor-pointer'}`}
+                    className={`relative ${day.starCollected ? '' : 'cursor-pointer'}`}
                     initial={{ scale: 0, rotate: -15 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ type: 'spring', stiffness: 400, damping: 15, delay: idx * 0.05 }}
                     onClick={(e) => {
-                      if (collected.has(day.date) || !onCollectStar) return
+                      if (day.starCollected || !onCollectStar) return
                       const rect = e.currentTarget.getBoundingClientRect()
-                      setCollected(prev => new Set(prev).add(day.date))
-                      onCollectStar(rect)
+                      onCollectStar(rect, day.date)
                     }}
                     style={{ touchAction: 'manipulation' }}
                   >
                     {/* 柔和外发光 - 未收集时脉动提示 */}
                     <motion.div
                       className="absolute -inset-1.5 rounded-full bg-gradient-to-br from-candy-yellow/25 to-candy-mint/30 blur-md"
-                      animate={collected.has(day.date)
+                      animate={day.starCollected
                         ? { opacity: 0.3, scale: 1 }
                         : { opacity: [0.4, 0.75, 0.4], scale: [0.95, 1.08, 0.95] }
                       }
-                      transition={collected.has(day.date)
+                      transition={day.starCollected
                         ? {}
                         : { repeat: Infinity, duration: 3, ease: 'easeInOut' }
                       }
                     />
                     {/* 闪光装饰 - 未收集时闪烁 */}
-                    {!collected.has(day.date) && (
+                    {!day.starCollected && (
                       <motion.span
                         className="absolute -top-1 -right-1 text-[9px] z-20 pointer-events-none"
                         animate={{ scale: [0.5, 1.1, 0.5], opacity: [0.2, 0.85, 0.2], rotate: [0, 20, 0] }}
@@ -184,7 +186,7 @@ export default function WeekCalendar({ refreshKey, onCollectStar }: { refreshKey
                     )}
                     {/* 主徽章 */}
                     <div className={`relative w-11 h-11 md:w-12 md:h-12 rounded-full flex items-center justify-center ring-[2.5px] ring-white/70 ring-offset-0 transition-all ${
-                      collected.has(day.date)
+                      day.starCollected
                         ? 'bg-gradient-to-br from-candy-mint/60 to-teal-300/60 shadow-[0_2px_8px_rgba(139,197,160,0.3)]'
                         : 'bg-gradient-to-br from-emerald-300 via-candy-mint to-teal-400 shadow-[0_3px_14px_rgba(139,197,160,0.5)]'
                     }`}>
@@ -192,7 +194,7 @@ export default function WeekCalendar({ refreshKey, onCollectStar }: { refreshKey
                       <div className="absolute top-[2px] left-[15%] right-[15%] h-[38%] rounded-full bg-white/30 blur-[0.5px]" />
                       {/* 图标 */}
                       <span className="relative z-10 text-[15px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.08)]">
-                        {collected.has(day.date) ? '✓' : '⭐'}
+                        {day.starCollected ? '✓' : '⭐'}
                       </span>
                     </div>
                   </motion.div>
