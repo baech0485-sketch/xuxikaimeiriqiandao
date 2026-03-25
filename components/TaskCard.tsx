@@ -9,6 +9,7 @@ const TASK_COLORS: Record<string, { bg: string; border: string; stripe: string; 
   reading: { bg: 'bg-[#F9F6EE]', border: 'border-[#E8D48A]/15', stripe: 'bg-candy-yellow', doneBg: 'bg-[#F0F8F0]' },
   drawing: { bg: 'bg-[#F9F4EE]', border: 'border-[#DDB880]/15', stripe: 'bg-candy-orange', doneBg: 'bg-[#F0F8F0]' },
   skipping: { bg: 'bg-[#EFF6F2]', border: 'border-[#8BC5A0]/15', stripe: 'bg-candy-mint', doneBg: 'bg-[#F0F8F0]' },
+  english: { bg: 'bg-[#EEF2F9]', border: 'border-[#7BA0D6]/15', stripe: 'bg-[#7BA0D6]', doneBg: 'bg-[#F0F8F0]' },
 }
 
 interface TaskCardProps {

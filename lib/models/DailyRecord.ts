@@ -15,6 +15,7 @@ export interface IDailyRecord extends Document {
     reading: TaskStatus
     drawing: TaskStatus
     skipping: TaskStatus
+    english: TaskStatus
   }
   fedCount: number
   allCompleted: boolean
@@ -36,6 +37,7 @@ const DailyRecordSchema = new Schema<IDailyRecord>({
     reading: { type: TaskStatusSchema, default: () => ({}) },
     drawing: { type: TaskStatusSchema, default: () => ({}) },
     skipping: { type: TaskStatusSchema, default: () => ({}) },
+    english: { type: TaskStatusSchema, default: () => ({}) },
   },
   fedCount: { type: Number, default: 0 },
   allCompleted: { type: Boolean, default: false },

@@ -15,6 +15,7 @@ export const TASKS = [
   { key: 'reading', name: '读书', emoji: '📖' },
   { key: 'drawing', name: '画画', emoji: '🎨' },
   { key: 'skipping', name: '跳绳', emoji: '🤸' },
+  { key: 'english', name: '学英语', emoji: '🔤' },
 ] as const
 
 export type TaskKey = typeof TASKS[number]['key']

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 interface WeekDay {
   date: string
@@ -10,38 +10,79 @@ interface WeekDay {
   isToday: boolean
 }
 
+interface DayRecord {
+  date: string
+  tasks: Record<string, { done: boolean; completedAt: string | null }>
+  allCompleted: boolean
+}
+
 const DAY_LABELS = ['一', '二', '三', '四', '五', '六', '日']
 
+/** 获取北京时间的今日日期字符串 */
+function getBeijingToday(): string {
+  const now = new Date()
+  const beijing = new Date(now.getTime() + 8 * 3600000 + now.getTimezoneOffset() * 60000)
+  return beijing.toISOString().split('T')[0]
+}
+
+/** 根据北京日期计算本周一的日期字符串 */
+function getMondayDate(todayStr: string): string {
+  const d = new Date(todayStr + 'T00:00:00Z')
+  const day = d.getUTCDay()
+  const offset = day === 0 ? 6 : day - 1
+  d.setUTCDate(d.getUTCDate() - offset)
+  return d.toISOString().split('T')[0]
+}
+
+/** 基于 UTC 生成本周7天的日期字符串列表 */
+function getWeekDates(mondayStr: string): string[] {
+  const dates: string[] = []
+  const d = new Date(mondayStr + 'T00:00:00Z')
+  for (let i = 0; i < 7; i++) {
+    const cur = new Date(d)
+    cur.setUTCDate(cur.getUTCDate() + i)
+    dates.push(cur.toISOString().split('T')[0])
+  }
+  return dates
+}
+
 export default function WeekCalendar({ refreshKey }: { refreshKey?: number }) {
-  const [days, setDays] = useState<WeekDay[]>([])
+  const [records, setRecords] = useState<DayRecord[]>([])
+
+  const today = useMemo(() => getBeijingToday(), [])
+  const mondayStr = useMemo(() => getMondayDate(today), [today])
+  const weekDates = useMemo(() => getWeekDates(mondayStr), [mondayStr])
 
   useEffect(() => {
     fetch('/api/daily/week')
-      .then(r => r.json())
-      .then(data => {
-        const { records, startDate, today } = data
-        if (!startDate) return
-        const weekDays: WeekDay[] = []
-        const start = new Date(startDate)
-        for (let i = 0; i < 7; i++) {
-          const d = new Date(start)
-          d.setDate(d.getDate() + i)
-          const dateStr = d.toISOString().split('T')[0]
-          const record = records?.find((r: any) => r.date === dateStr)
-          let status: WeekDay['status'] = 'none'
-          if (dateStr > today) { status = 'future' }
-          else if (record) {
-            if (record.allCompleted) { status = 'full' }
-            else {
-              const doneCount = Object.values(record.tasks).filter((t: any) => t.done).length
-              status = doneCount > 0 ? 'partial' : 'none'
-            }
-          }
-          weekDays.push({ date: dateStr, label: DAY_LABELS[i], dayNum: d.getDate(), status, isToday: dateStr === today })
-        }
-        setDays(weekDays)
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
       })
+      .then(data => {
+        if (Array.isArray(data.records)) {
+          setRecords(data.records)
+        }
+      })
+      .catch(() => { /* API 失败时仍展示空状态日历 */ })
   }, [refreshKey])
+
+  const days: WeekDay[] = weekDates.map((dateStr, i) => {
+    const record = records.find(r => r.date === dateStr)
+    let status: WeekDay['status'] = 'none'
+    if (dateStr > today) {
+      status = 'future'
+    } else if (record) {
+      if (record.allCompleted) {
+        status = 'full'
+      } else {
+        const doneCount = Object.values(record.tasks || {}).filter((t: any) => t?.done).length
+        status = doneCount > 0 ? 'partial' : 'none'
+      }
+    }
+    const dayNum = new Date(dateStr + 'T00:00:00Z').getUTCDate()
+    return { date: dateStr, label: DAY_LABELS[i], dayNum, status, isToday: dateStr === today }
+  })
 
   return (
     <div className="card-kid">
