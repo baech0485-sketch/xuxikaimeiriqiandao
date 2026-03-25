@@ -9,13 +9,13 @@ export const PET_TYPES = [
 export type PetType = typeof PET_TYPES[number]['type']
 
 export const TASKS = [
-  { key: 'literacy', name: '认字', emoji: '📝' },
-  { key: 'math', name: '摩比爱数学', emoji: '🔢' },
-  { key: 'writing', name: '写字', emoji: '✏️' },
-  { key: 'reading', name: '读书', emoji: '📖' },
-  { key: 'drawing', name: '画画', emoji: '🎨' },
-  { key: 'skipping', name: '跳绳', emoji: '🤸' },
-  { key: 'english', name: '学英语', emoji: '🔤' },
+  { key: 'literacy', name: '认字', emoji: '📝', food: '🍎', foodName: '苹果' },
+  { key: 'math', name: '摩比爱数学', emoji: '🔢', food: '🍰', foodName: '蛋糕' },
+  { key: 'writing', name: '写字', emoji: '✏️', food: '🍪', foodName: '饼干' },
+  { key: 'reading', name: '读书', emoji: '📖', food: '🍇', foodName: '葡萄' },
+  { key: 'drawing', name: '画画', emoji: '🎨', food: '🍬', foodName: '糖果' },
+  { key: 'skipping', name: '跳绳', emoji: '🤸', food: '🍌', foodName: '香蕉' },
+  { key: 'english', name: '学英语', emoji: '🔤', food: '🧁', foodName: '杯子蛋糕' },
 ] as const
 
 export type TaskKey = typeof TASKS[number]['key']

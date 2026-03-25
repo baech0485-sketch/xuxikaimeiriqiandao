@@ -1,35 +1,48 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import dbConnect from '@/lib/mongodb'
 import User from '@/lib/models/User'
 import DailyRecord from '@/lib/models/DailyRecord'
 import { getTodayStr } from '@/lib/petLogic'
 import { TASKS } from '@/lib/constants'
 
-export async function POST() {
+export async function POST(req: NextRequest) {
   await dbConnect()
+  const { taskKey } = await req.json()
+
+  const validKeys = TASKS.map(t => t.key)
+  if (!taskKey || !validKeys.includes(taskKey)) {
+    return NextResponse.json({ error: '无效的任务' }, { status: 400 })
+  }
+
   const user = await User.findOne().sort({ createdAt: -1 })
   if (!user) return NextResponse.json({ error: '用户不存在' }, { status: 404 })
 
   const today = getTodayStr()
   const record = await DailyRecord.findOne({ userId: user._id, date: today })
 
-  const completedCount = record
-    ? TASKS.filter(t => {
-        const td = record.tasks[t.key as keyof typeof record.tasks]
-        return td && td.done
-      }).length
-    : 0
-
-  if (completedCount === 0) {
-    return NextResponse.json({ error: '请先完成至少一个任务' }, { status: 400 })
+  if (!record) {
+    return NextResponse.json({ error: '今日无记录' }, { status: 400 })
   }
 
-  if (record && record.fedCount >= completedCount) {
-    return NextResponse.json({ error: '需要完成更多任务才能继续喂食' }, { status: 400 })
+  // 检查该任务是否已完成
+  const taskData = record.tasks[taskKey as keyof typeof record.tasks]
+  if (!taskData || !taskData.done) {
+    return NextResponse.json({ error: '该任务尚未完成' }, { status: 400 })
   }
+
+  // 检查该任务的食物是否已投喂
+  const fedTasks: string[] = record.fedTasks || []
+  if (fedTasks.includes(taskKey)) {
+    return NextResponse.json({ error: '该食物已投喂', alreadyFed: true })
+  }
+
+  // 投喂
+  fedTasks.push(taskKey)
+  record.fedTasks = fedTasks
+  record.fedCount = fedTasks.length
 
   if (user.pet.mood === 'runaway') {
-    if (record && record.allCompleted) {
+    if (record.allCompleted) {
       user.pet.recallProgress = (user.pet.recallProgress || 0) + 1
       if (user.pet.recallProgress >= 3) {
         user.pet.mood = 'happy'
@@ -42,11 +55,8 @@ export async function POST() {
     user.pet.mood = 'happy'
   }
 
-  if (record) {
-    record.fedCount += 1
-    await record.save()
-  }
-
+  await record.save()
   await user.save()
-  return NextResponse.json({ user, fedCount: record?.fedCount || 0 })
+
+  return NextResponse.json({ user, record })
 }

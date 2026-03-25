@@ -7,7 +7,7 @@ import { PET_TYPES, TASKS, DAILY_GOAL } from '@/lib/constants'
 import type { PetMood } from '@/lib/constants'
 import PetDisplay from '@/components/Pet/PetDisplay'
 import TaskCard from '@/components/TaskCard'
-import FeedButton from '@/components/FeedButton'
+import FoodTray from '@/components/FoodTray'
 import TopNav from '@/components/TopNav'
 import WeekCalendar from '@/components/WeekCalendar'
 import StarBurst from '@/components/StarBurst'
@@ -24,7 +24,7 @@ interface UserData {
 interface TaskStatus { done: boolean; completedAt: string | null }
 
 interface DailyRecordData {
-  _id: string; date: string; tasks: Record<string, TaskStatus>; fedCount: number; allCompleted: boolean
+  _id: string; date: string; tasks: Record<string, TaskStatus>; fedCount: number; fedTasks: string[]; allCompleted: boolean
 }
 
 export default function Home() {
@@ -35,6 +35,7 @@ export default function Home() {
   const [showCelebration, setShowCelebration] = useState(false)
   const [confirmTask, setConfirmTask] = useState<typeof TASKS[number] | null>(null)
   const [feedingAnim, setFeedingAnim] = useState(false)
+  const [feedingFood, setFeedingFood] = useState('')
   const [flyingHeart, setFlyingHeart] = useState<{ sx: number; sy: number; tx: number; ty: number } | null>(null)
   const [starBounce, setStarBounce] = useState(false)
   const [weekRefresh, setWeekRefresh] = useState(0)
@@ -67,12 +68,17 @@ export default function Home() {
     setConfirmTask(null)
   }
 
-  const handleFeed = async () => {
+  const handleFeed = async (taskKey: string, foodEmoji: string) => {
+    setFeedingFood(foodEmoji)
     setFeedingAnim(true)
-    const res = await fetch('/api/pet/feed', { method: 'POST' })
+    const res = await fetch('/api/pet/feed', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ taskKey }),
+    })
     const data = await res.json()
     if (data.user) setUser(data.user)
-    if (data.fedCount !== undefined && record) setRecord({ ...record, fedCount: data.fedCount })
+    if (data.record) setRecord(data.record)
     setTimeout(() => setFeedingAnim(false), 2000)
   }
 
@@ -175,7 +181,7 @@ export default function Home() {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.7, ease: 'easeOut' }}
                       >
-                        {petInfo.foodEmoji}
+                        {feedingFood || '🍎'}
                       </motion.span>
                     )}
                   </AnimatePresence>
@@ -200,10 +206,11 @@ export default function Home() {
                   />
 
                   <div className="flex justify-center mt-2">
-                    <FeedButton
-                      foodEmoji={petInfo.foodEmoji}
-                      canFeed={canFeedCount > 0}
-                      feedCount={canFeedCount}
+                    <FoodTray
+                      tasksDone={Object.fromEntries(
+                        TASKS.map(t => [t.key, record?.tasks[t.key]?.done || false])
+                      )}
+                      fedTasks={record?.fedTasks || []}
                       onFeed={handleFeed}
                       petMood={user.pet.mood}
                     />

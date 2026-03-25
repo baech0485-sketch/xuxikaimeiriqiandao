@@ -18,6 +18,7 @@ export interface IDailyRecord extends Document {
     english: TaskStatus
   }
   fedCount: number
+  fedTasks: string[]
   allCompleted: boolean
   starCollected: boolean
   starsEarned: number
@@ -41,6 +42,7 @@ const DailyRecordSchema = new Schema<IDailyRecord>({
     english: { type: TaskStatusSchema, default: () => ({}) },
   },
   fedCount: { type: Number, default: 0 },
+  fedTasks: { type: [String], default: [] },
   allCompleted: { type: Boolean, default: false },
   starCollected: { type: Boolean, default: false },
   starsEarned: { type: Number, default: 0 },
