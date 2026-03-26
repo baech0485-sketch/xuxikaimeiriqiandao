@@ -17,7 +17,9 @@ export async function GET() {
     record = await DailyRecord.create({ userId: user._id, date: today })
   }
 
-  return NextResponse.json({ record })
+  const res = NextResponse.json({ record })
+  res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate')
+  return res
 }
 
 export async function POST(req: NextRequest) {

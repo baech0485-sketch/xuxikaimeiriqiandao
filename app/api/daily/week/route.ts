@@ -28,5 +28,7 @@ export async function GET() {
     date: { $gte: startDate, $lte: endDate },
   }).sort({ date: 1 })
 
-  return NextResponse.json({ records, startDate, endDate, today })
+  const res = NextResponse.json({ records, startDate, endDate, today })
+  res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate')
+  return res
 }

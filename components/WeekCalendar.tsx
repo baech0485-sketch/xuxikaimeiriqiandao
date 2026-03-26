@@ -56,7 +56,7 @@ export default function WeekCalendar({ refreshKey, onCollectStar }: { refreshKey
   const weekDates = useMemo(() => getWeekDates(mondayStr), [mondayStr])
 
   useEffect(() => {
-    fetch('/api/daily/week')
+    fetch(`/api/daily/week?_t=${Date.now()}`)
       .then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`)
         return r.json()
