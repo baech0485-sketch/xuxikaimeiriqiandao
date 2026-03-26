@@ -163,14 +163,14 @@ export default function Home() {
 
           <div className="flex flex-col md:flex-row gap-3 flex-1 min-h-0">
             {/* 左侧：宠物区 */}
-            <div className="md:w-[38%] flex flex-col min-h-0">
-              <div className="card-kid w-full flex-1 relative overflow-hidden flex flex-col">
+            <div className="md:w-[38%] md:self-start">
+              <div className="card-kid w-full relative overflow-hidden">
                 {/* 宠物区内部背景 */}
                 <div className="absolute inset-0 bg-gradient-to-b from-candy-blue-light/20 to-candy-mint-light/20 rounded-3xl" />
                 {/* 草地装饰 */}
                 <div className="absolute bottom-0 left-0 right-0 h-10 bg-gradient-to-t from-candy-mint-light/20 to-transparent rounded-b-3xl" />
 
-                <div className="relative z-10 pt-2 pb-4 flex flex-col items-center flex-grow justify-center">
+                <div className="relative z-10 pt-2 pb-4 flex flex-col items-center">
                   {/* 喂食动画 */}
                   <AnimatePresence>
                     {feedingAnim && (
