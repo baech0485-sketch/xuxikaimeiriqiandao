@@ -133,7 +133,7 @@ export default function Home() {
   const progress = (completedCount / DAILY_GOAL) * 100
 
   return (
-    <main className="scene-bg h-[100dvh] flex flex-col overflow-hidden">
+    <main className="scene-bg min-h-[100dvh] lg:h-[100dvh] flex flex-col lg:overflow-hidden">
       {/* 装饰云朵 */}
       <div className="cloud top-16 animate-slide-cloud" style={{ animationDelay: '0s', opacity: 0.2 }}>☁️</div>
       <div className="cloud top-28 animate-slide-cloud-2" style={{ animationDelay: '-15s', fontSize: '2rem', opacity: 0.15 }}>☁️</div>
@@ -141,7 +141,7 @@ export default function Home() {
       <div className="relative z-10 flex flex-col flex-1 min-h-0">
         <TopNav totalStars={user.stats.totalStars} streak={user.stats.streak} childName={user.name} starBounce={starBounce} />
 
-        <div className="max-w-5xl mx-auto px-4 pt-2 flex-1 min-h-0 flex flex-col w-full">
+        <div className="max-w-5xl mx-auto px-4 pt-2 flex-1 min-h-0 flex flex-col w-full overflow-y-auto lg:overflow-hidden no-scrollbar">
           {/* 进度条 */}
           <div className="mb-2">
             <div className="flex items-center justify-between mb-1 px-1">
@@ -161,9 +161,9 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-3 flex-1 min-h-0">
+          <div className="flex flex-col lg:flex-row gap-3 flex-1 min-h-0">
             {/* 左侧：宠物区 */}
-            <div className="md:w-[38%] md:self-start">
+            <div className="lg:w-[35%] lg:self-start flex-shrink-0">
               <div className="card-kid w-full relative overflow-hidden">
                 {/* 宠物区内部背景 */}
                 <div className="absolute inset-0 bg-gradient-to-b from-candy-blue-light/20 to-candy-mint-light/20 rounded-3xl" />
@@ -220,7 +220,7 @@ export default function Home() {
             </div>
 
             {/* 右侧：任务列表 */}
-            <div className="md:w-[62%] flex flex-col min-h-0">
+            <div className="lg:w-[65%] flex flex-col min-h-0 flex-1">
               <div className="mb-2 flex items-center justify-between px-1 flex-shrink-0">
                 <h2 className="text-base font-bold text-gray-500 drop-shadow-sm">
                   📋 今日任务
