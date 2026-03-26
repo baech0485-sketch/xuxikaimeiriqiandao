@@ -93,9 +93,9 @@ export default function WeekCalendar({ refreshKey, onCollectStar }: { refreshKey
   const fullCount = days.filter(d => d.status === 'full').length
 
   return (
-    <div className="card-kid overflow-hidden">
+    <div className="card-kid overflow-hidden !p-3.5">
       {/* 标题栏 */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-candy-blue/20 to-candy-mint/20 flex items-center justify-center">
             <span className="text-sm">📅</span>

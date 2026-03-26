@@ -133,18 +133,18 @@ export default function Home() {
   const progress = (completedCount / DAILY_GOAL) * 100
 
   return (
-    <main className="scene-bg pb-8">
+    <main className="scene-bg h-[100dvh] flex flex-col overflow-hidden">
       {/* 装饰云朵 */}
       <div className="cloud top-16 animate-slide-cloud" style={{ animationDelay: '0s', opacity: 0.2 }}>☁️</div>
       <div className="cloud top-28 animate-slide-cloud-2" style={{ animationDelay: '-15s', fontSize: '2rem', opacity: 0.15 }}>☁️</div>
 
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col flex-1 min-h-0">
         <TopNav totalStars={user.stats.totalStars} streak={user.stats.streak} childName={user.name} starBounce={starBounce} />
 
-        <div className="max-w-5xl mx-auto px-4 pt-3">
+        <div className="max-w-5xl mx-auto px-4 pt-2 flex-1 min-h-0 flex flex-col w-full">
           {/* 进度条 */}
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-1.5 px-1">
+          <div className="mb-2">
+            <div className="flex items-center justify-between mb-1 px-1">
               <span className="text-sm font-bold text-gray-500">今日进度（完成{DAILY_GOAL}个达标）</span>
               <span className="text-sm font-bold text-gray-600">
                 {completedCount}/{DAILY_GOAL}
@@ -161,10 +161,10 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-5">
+          <div className="flex flex-col md:flex-row gap-3 flex-1 min-h-0">
             {/* 左侧：宠物区 */}
-            <div className="md:w-[38%] flex flex-col">
-              <div className="card-kid w-full h-full relative overflow-hidden flex flex-col">
+            <div className="md:w-[38%] flex flex-col min-h-0">
+              <div className="card-kid w-full flex-1 relative overflow-hidden flex flex-col">
                 {/* 宠物区内部背景 */}
                 <div className="absolute inset-0 bg-gradient-to-b from-candy-blue-light/20 to-candy-mint-light/20 rounded-3xl" />
                 {/* 草地装饰 */}
@@ -220,8 +220,8 @@ export default function Home() {
             </div>
 
             {/* 右侧：任务列表 */}
-            <div className="md:w-[62%]">
-              <div className="mb-3 flex items-center justify-between px-1">
+            <div className="md:w-[62%] flex flex-col min-h-0">
+              <div className="mb-2 flex items-center justify-between px-1 flex-shrink-0">
                 <h2 className="text-base font-bold text-gray-500 drop-shadow-sm">
                   📋 今日任务
                 </h2>
@@ -232,7 +232,7 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2 flex-1 min-h-0 overflow-y-auto no-scrollbar">
                 {TASKS.map((task, i) => (
                   <motion.div
                     key={task.key}
@@ -253,7 +253,7 @@ export default function Home() {
           </div>
 
           {/* 底部周历 */}
-          <div className="mt-5">
+          <div className="mt-2 flex-shrink-0 pb-2">
             <WeekCalendar refreshKey={completedCount + weekRefresh} onCollectStar={handleCollectStar} />
           </div>
         </div>

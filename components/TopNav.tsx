@@ -37,9 +37,9 @@ export default function TopNav({ totalStars, streak, childName, starBounce }: To
   }, [])
 
   return (
-    <header className="sticky top-0 z-30 px-4 py-2.5">
+    <header className="sticky top-0 z-30 px-4 py-1.5">
       <div className="max-w-5xl mx-auto">
-        <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-kid-lg px-6 py-3.5 flex items-center justify-between">
+        <div className="bg-white/85 backdrop-blur-xl rounded-3xl shadow-kid-lg px-5 py-2.5 flex items-center justify-between">
           {/* 左侧品牌区 */}
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-candy-mint-light via-candy-blue-light to-candy-pink-light flex items-center justify-center text-2xl shadow-kid">
