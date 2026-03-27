@@ -34,11 +34,11 @@ export default function StarBurst({ show, onComplete }: StarBurstProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <motion.div className="absolute inset-0 bg-black/10 backdrop-blur-sm" />
+          <motion.div className="absolute inset-0 bg-[#02060d]/70 backdrop-blur-sm" />
 
           {PARTICLES.map((p, i) => (
             <motion.span
-              key={i}
+              key={`${p.emoji}-${p.angle}`}
               className="absolute pointer-events-none text-xl opacity-70"
               initial={{ x: 0, y: 0, opacity: 0.7, scale: 0 }}
               animate={{
@@ -60,10 +60,10 @@ export default function StarBurst({ show, onComplete }: StarBurstProps) {
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 250, damping: 15, delay: 0.1 }}
           >
-            <p className="text-5xl mb-3">🏆</p>
-            <div className="bg-white/92 backdrop-blur rounded-3xl px-8 py-5 shadow-kid-lg">
-              <p className="text-2xl font-bold text-gray-600">太棒了！</p>
-              <p className="text-sm text-gray-400 mt-1.5">今日全部完成！⭐ +1</p>
+            <p className="mb-3 text-5xl">🏆</p>
+            <div className="mission-panel px-8 py-5">
+              <p className="font-display text-2xl font-bold tracking-[0.08em] text-white">太棒了！</p>
+              <p className="mt-1.5 text-sm text-slate-300">今日全部完成！星能 +1</p>
             </div>
           </motion.div>
         </motion.div>

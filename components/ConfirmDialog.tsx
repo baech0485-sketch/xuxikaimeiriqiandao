@@ -1,7 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { playCompleteSound } from '@/lib/sounds'
 
 interface ConfirmDialogProps {
@@ -13,6 +13,22 @@ interface ConfirmDialogProps {
 }
 
 export default function ConfirmDialog({ show, taskEmoji, taskName, onConfirm, onCancel }: ConfirmDialogProps) {
+  const confirmButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    if (!show) return
+
+    confirmButtonRef.current?.focus()
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onCancel()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [show, onCancel])
+
   const handleConfirm = useCallback((e: React.MouseEvent | React.TouchEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -35,29 +51,41 @@ export default function ConfirmDialog({ show, taskEmoji, taskName, onConfirm, on
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <div
-            className="absolute inset-0 bg-black/15 backdrop-blur-sm"
+          <button
+            type="button"
+            aria-label="关闭确认弹窗"
+            className="absolute inset-0 bg-[#02060d]/75 backdrop-blur-sm"
             onClick={onCancel}
           />
           <motion.div
-            className="relative z-10 bg-white rounded-3xl p-8 shadow-kid-lg max-w-sm w-full text-center"
+            className="mission-panel relative z-10 w-full max-w-sm p-8 text-center"
             initial={{ scale: 0.6, y: 40, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.85, y: 20, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 350, damping: 25 }}
             onClick={e => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="confirm-dialog-title"
+            aria-describedby="confirm-dialog-desc"
           >
-            <div className="w-18 h-18 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-candy-yellow-light/60 to-candy-pink-light/60 flex items-center justify-center p-4">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-[24px] border border-amber-200/20 bg-[linear-gradient(135deg,rgba(255,209,102,0.18),rgba(255,122,162,0.14))] p-4">
               <span className="text-4xl">{taskEmoji}</span>
             </div>
-            <p className="text-lg font-bold text-gray-600 mb-5 leading-relaxed">
+            <p className="mb-2 text-xs uppercase tracking-[0.22em] text-slate-400">task confirmation</p>
+            <p id="confirm-dialog-title" className="mb-2 text-lg font-bold leading-relaxed text-slate-100">
               你完成了
-              <span className="text-candy-pink"> {taskName} </span>
+              <span className="text-sky-200"> {taskName} </span>
               吗？
+            </p>
+            <p id="confirm-dialog-desc" className="mb-5 text-sm text-slate-400">
+              确认后会记录这项任务完成，并同步更新宠物状态。
             </p>
             <div className="flex gap-4">
               <button
-                className="flex-1 btn-kid bg-candy-mint/80 text-white shadow-kid text-base active:scale-95 select-none"
+                type="button"
+                ref={confirmButtonRef}
+                className="flex-1 rounded-2xl border border-emerald-300/30 bg-emerald-400/18 px-4 py-4 text-base font-bold text-emerald-100 transition active:scale-95 select-none"
                 style={{ touchAction: 'manipulation' }}
                 onClick={handleConfirm}
                 onTouchEnd={handleConfirm}
@@ -65,7 +93,8 @@ export default function ConfirmDialog({ show, taskEmoji, taskName, onConfirm, on
                 完成了！
               </button>
               <button
-                className="flex-1 btn-kid bg-gray-100 text-gray-400 text-base active:scale-95 select-none"
+                type="button"
+                className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-base font-bold text-slate-300 transition active:scale-95 select-none"
                 style={{ touchAction: 'manipulation' }}
                 onClick={handleCancel}
                 onTouchEnd={handleCancel}

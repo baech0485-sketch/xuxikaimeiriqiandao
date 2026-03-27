@@ -26,13 +26,15 @@ export default function FoodTray({ tasksDone, fedTasks, onFeed, petMood }: FoodT
 
           return (
             <motion.button
+              type="button"
               key={task.key}
-              className={`relative w-11 h-11 rounded-xl flex items-center justify-center text-lg transition-all ${
+              aria-label={`${task.foodName}${canFeed ? '，点击投喂' : isFed ? '，已投喂' : '，未解锁'}`}
+              className={`relative flex h-12 w-12 items-center justify-center rounded-2xl border text-lg transition-all ${
                 canFeed
-                  ? 'bg-gradient-to-br from-candy-orange-light to-candy-pink-light shadow-kid cursor-pointer'
+                  ? 'cursor-pointer border-amber-200/25 bg-[linear-gradient(135deg,rgba(255,183,77,0.22),rgba(255,122,162,0.18))] shadow-[0_0_24px_rgba(255,183,77,0.12)]'
                   : isFed
-                    ? 'bg-candy-mint-light/40 cursor-default'
-                    : 'bg-gray-100/60 cursor-default'
+                    ? 'cursor-default border-emerald-300/18 bg-emerald-300/10'
+                    : 'cursor-default border-white/6 bg-white/[0.03]'
               }`}
               onClick={() => canFeed && onFeed(task.key, task.food)}
               whileTap={canFeed ? { scale: 0.85 } : undefined}
@@ -41,12 +43,12 @@ export default function FoodTray({ tasksDone, fedTasks, onFeed, petMood }: FoodT
               style={{ touchAction: 'manipulation' }}
               title={`${task.foodName}${canFeed ? ' - 点击投喂' : isFed ? ' - 已投喂' : ' - 未解锁'}`}
             >
-              <span className={canFeed ? '' : isFed ? 'opacity-40' : 'opacity-20 grayscale'}>
+              <span className={canFeed ? '' : isFed ? 'opacity-50' : 'opacity-20 grayscale'}>
                 {task.food}
               </span>
               {isFed && (
                 <motion.div
-                  className="absolute -top-1 -right-1 w-4 h-4 bg-candy-mint rounded-full flex items-center justify-center"
+                  className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-400"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 500 }}
@@ -58,7 +60,7 @@ export default function FoodTray({ tasksDone, fedTasks, onFeed, petMood }: FoodT
           )
         })}
       </div>
-      <span className="text-[11px] font-bold text-gray-400">
+      <span className="text-[11px] font-bold tracking-[0.12em] text-slate-400 uppercase">
         {hasFoods ? `${availableFoods.length}个食物可投喂` : '完成任务获得食物'}
       </span>
     </div>

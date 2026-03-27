@@ -103,27 +103,27 @@ export default function PetDisplay({
             key="runaway"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-4"
+            className="py-4 text-center"
           >
             <div className="relative mx-auto w-36 h-28 mb-4">
-              <div className="absolute bottom-0 w-full h-16 bg-gradient-to-t from-amber-100 to-amber-50 rounded-[50%] border border-amber-200/50" />
+              <div className="absolute bottom-0 h-16 w-full rounded-[50%] border border-amber-300/20 bg-gradient-to-t from-amber-300/15 to-amber-100/5" />
               <div className="absolute bottom-3 w-full text-center text-4xl opacity-20">🏠</div>
             </div>
-            <div className="bg-amber-50/80 border border-dashed border-amber-200 rounded-2xl p-4 max-w-[210px] mx-auto">
-              <p className="text-xs text-amber-500 mb-1.5 font-bold">📮 一封信</p>
-              <p className="text-sm leading-relaxed text-amber-700/80">
+            <div className="mx-auto max-w-[240px] rounded-[24px] border border-dashed border-amber-300/25 bg-amber-200/10 p-4 backdrop-blur-sm">
+              <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.18em] text-amber-200">一封离站信号</p>
+              <p className="text-sm leading-relaxed text-amber-50/80">
                 亲爱的主人，我饿了好几天了...
                 <br />完成全部任务找回我吧！
               </p>
               {recallProgress > 0 && (
-                <div className="mt-3 bg-white/50 rounded-xl p-2">
-                  <p className="text-[10px] text-amber-400 mb-1">召回进度 {recallProgress}/3</p>
+                <div className="mt-3 rounded-xl bg-black/20 p-2">
+                  <p className="mb-1 text-[10px] text-amber-200/70">召回进度 {recallProgress}/3</p>
                   <div className="flex gap-1 justify-center">
                     {[0, 1, 2].map(i => (
                       <div
                         key={i}
                         className={`h-2 flex-1 rounded-full transition-all duration-500 ${
-                          i < recallProgress ? 'bg-candy-mint' : 'bg-gray-200'
+                          i < recallProgress ? 'bg-emerald-300' : 'bg-white/10'
                         }`}
                       />
                     ))}
@@ -320,17 +320,17 @@ export default function PetDisplay({
         )}
       </AnimatePresence>
 
-      <p className="text-base font-bold text-gray-600">{petName}</p>
+      <p className="font-display text-xl font-bold tracking-[0.08em] text-white">{petName}</p>
 
       {/* ── 心情气泡 ── */}
       {mood !== 'runaway' && (
         <motion.div
-          className="relative bg-white/90 rounded-2xl px-4 py-1.5 shadow-kid"
+          className="relative rounded-2xl border border-white/10 bg-white/8 px-4 py-2 backdrop-blur-sm"
           animate={isTapped ? { scale: [1, 1.08, 1] } : {}}
           transition={{ duration: 0.3 }}
         >
-          <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-white/90" />
-          <p className="text-xs text-center text-gray-500">
+          <div className="absolute -top-1.5 left-1/2 h-0 w-0 -translate-x-1/2 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-white/8" />
+          <p className="text-center text-xs text-slate-200/80">
             {isTapped ? '嘻嘻~好痒呀！' : isEating ? '好好吃呀~谢谢你喂我！' : moodInfo.message}
           </p>
         </motion.div>
@@ -338,7 +338,7 @@ export default function PetDisplay({
 
       {/* ── 饱食度 ── */}
       {mood !== 'runaway' && (
-        <div className="flex gap-0.5 mt-0.5">
+        <div className="mt-0.5 flex gap-0.5">
           {[0, 1, 2, 3, 4].map(i => (
             <motion.span
               key={i}
