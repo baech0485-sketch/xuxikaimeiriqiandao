@@ -1,16 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Tektur:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --candy-pink: #E8A0B4;
-  --candy-blue: #8CBFD6;
-  --candy-yellow: #E8D48A;
-  --candy-mint: #8BC5A0;
-  --candy-purple: #B8A0D6;
-  --candy-orange: #DDB880;
+  --clay-primary: #7C6AEF;
+  --clay-pink: #FF8FAB;
+  --clay-mint: #5CD4A0;
+  --clay-amber: #FFB347;
+  --clay-gold: #FFD93D;
+  --clay-text: #2D1B69;
+  --clay-text-muted: #7B6F8E;
+  --clay-bg-start: #FFF8F0;
+  --clay-bg-end: #F0E6FF;
 }
 
 * {
@@ -18,157 +21,163 @@
 }
 
 body {
-  font-family: 'Noto Sans SC', sans-serif;
+  font-family: 'Nunito', 'Noto Sans SC', sans-serif;
   min-height: 100vh;
   user-select: none;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at top, rgba(65, 102, 164, 0.28), transparent 36%),
-    radial-gradient(circle at 20% 18%, rgba(0, 202, 255, 0.14), transparent 24%),
-    linear-gradient(180deg, #07111d 0%, #09182a 52%, #050b14 100%);
-  color: #ecf4ff;
+  background: linear-gradient(160deg, var(--clay-bg-start) 0%, #FFF0F5 30%, var(--clay-bg-end) 70%, #E8F4FD 100%);
+  color: var(--clay-text);
 }
 
-/* ============ 按钮 ============ */
+/* ============ 字体 ============ */
+.font-display {
+  font-family: 'Fredoka', 'Noto Sans SC', sans-serif;
+}
+
+/* ============ 粘土风按钮 ============ */
 .btn-kid {
-  @apply px-8 py-4 rounded-2xl text-xl font-bold transition-all duration-200 active:scale-95;
+  @apply px-8 py-4 rounded-3xl text-xl font-bold transition-all duration-200;
   min-height: 52px;
   min-width: 52px;
   letter-spacing: 0.02em;
+  border: 3px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    6px 6px 14px rgba(0, 0, 0, 0.08),
+    -3px -3px 10px rgba(255, 255, 255, 0.9),
+    inset 0 2px 0 rgba(255, 255, 255, 0.5);
 }
 
-/* ============ 卡片 ============ */
-.card-kid {
-  @apply rounded-3xl p-5;
-  background: rgba(255,255,255,0.88);
+.btn-kid:active {
+  transform: translateY(2px);
+  box-shadow:
+    2px 2px 6px rgba(0, 0, 0, 0.08),
+    -1px -1px 4px rgba(255, 255, 255, 0.6),
+    inset 0 2px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* ============ 粘土风卡片 ============ */
+.clay-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    8px 8px 20px rgba(124, 106, 239, 0.08),
+    -4px -4px 12px rgba(255, 255, 255, 0.95),
+    inset 0 2px 0 rgba(255, 255, 255, 0.8);
+}
+
+.clay-card-accent {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  background: linear-gradient(135deg, rgba(124, 106, 239, 0.08), rgba(255, 143, 171, 0.08));
   backdrop-filter: blur(8px);
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04), 0 0 0 1px rgba(255,255,255,0.7) inset;
+  box-shadow:
+    6px 6px 16px rgba(124, 106, 239, 0.06),
+    -3px -3px 10px rgba(255, 255, 255, 0.9),
+    inset 0 2px 0 rgba(255, 255, 255, 0.6);
 }
 
-/* ============ 场景背景（夜间观测站） ============ */
+/* ============ 粘土风标签 ============ */
+.clay-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(124, 106, 239, 0.2);
+  background: linear-gradient(135deg, rgba(124, 106, 239, 0.1), rgba(255, 143, 171, 0.08));
+  padding: 0.35rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--clay-primary);
+}
+
+/* ============ 粘土风统计卡片 ============ */
+.clay-stat {
+  border-radius: 22px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 1rem;
+  box-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.04),
+    -2px -2px 8px rgba(255, 255, 255, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+/* ============ 粘土风进度条 ============ */
+.clay-progress-track {
+  overflow: hidden;
+  border-radius: 9999px;
+  background: rgba(124, 106, 239, 0.1);
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.clay-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #7C6AEF, #FF8FAB, #FFB347);
+  box-shadow: 0 2px 8px rgba(124, 106, 239, 0.3);
+}
+
+/* ============ 粘土风轮廓卡片 ============ */
+.clay-outline {
+  border-radius: 22px;
+  border: 2px solid rgba(124, 106, 239, 0.12);
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow:
+    3px 3px 8px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+/* ============ 场景背景 ============ */
 .scene-bg {
-  background:
-    radial-gradient(circle at top, rgba(65, 102, 164, 0.28), transparent 36%),
-    radial-gradient(circle at 20% 18%, rgba(0, 202, 255, 0.14), transparent 24%),
-    linear-gradient(180deg, #07111d 0%, #09182a 52%, #050b14 100%);
+  background: linear-gradient(160deg, var(--clay-bg-start) 0%, #FFF0F5 30%, var(--clay-bg-end) 70%, #E8F4FD 100%);
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
+}
+
+/* ============ 装饰泡泡 ============ */
+.clay-bubble {
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+  opacity: 0.4;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    inset 0 -4px 8px rgba(0, 0, 0, 0.03),
+    0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 /* ============ 隐藏滚动条 ============ */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ============ 进度条 ============ */
+/* ============ 旧版进度条兼容 ============ */
 .progress-bar-track {
   @apply rounded-full overflow-hidden;
-  background: rgba(255,255,255,0.5);
+  background: rgba(124, 106, 239, 0.1);
   height: 10px;
 }
 
 .progress-bar-fill {
   @apply rounded-full h-full transition-all duration-700 ease-out;
-  background: linear-gradient(90deg, #B8D8A8, #8CBFD6, #B8A0D6);
+  background: linear-gradient(90deg, #7C6AEF, #FF8FAB);
 }
 
-.mission-grid {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.22;
-  background-image:
-    linear-gradient(rgba(135, 166, 215, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(135, 166, 215, 0.12) 1px, transparent 1px);
-  background-size: 56px 56px;
-  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 88%);
-}
-
-.scene-noise {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.08;
-  background-image:
-    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.9) 0.6px, transparent 0.7px),
-    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.6) 0.6px, transparent 0.7px),
-    radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.8) 0.8px, transparent 0.9px);
-  background-size: 140px 140px, 180px 180px, 220px 220px;
-}
-
-.mission-orb {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(90px);
-  pointer-events: none;
-}
-
-.font-display {
-  font-family: 'Tektur', 'Noto Sans SC', sans-serif;
-}
-
-.mission-panel {
-  position: relative;
-  overflow: hidden;
-  border-radius: 28px;
-  border: 1px solid rgba(140, 191, 214, 0.18);
-  background: linear-gradient(180deg, rgba(10, 21, 36, 0.9) 0%, rgba(7, 14, 25, 0.82) 100%);
-  box-shadow:
-    0 24px 80px rgba(0, 0, 0, 0.32),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    inset 0 0 0 1px rgba(91, 141, 208, 0.05);
-  backdrop-filter: blur(18px);
-}
-
-.mission-panel::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(135deg, rgba(102, 191, 255, 0.1), transparent 34%, transparent 66%, rgba(163, 112, 255, 0.08));
-}
-
-.mission-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  border-radius: 9999px;
-  border: 1px solid rgba(140, 191, 214, 0.18);
-  background: rgba(10, 20, 34, 0.66);
-  padding: 0.38rem 0.8rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(198, 223, 255, 0.78);
-}
-
-.mission-stat {
-  border-radius: 22px;
-  border: 1px solid rgba(137, 172, 221, 0.14);
-  background: rgba(7, 15, 26, 0.6);
-  padding: 1rem;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-}
-
-.mission-progress-track {
-  overflow: hidden;
-  border-radius: 9999px;
-  background: rgba(131, 159, 201, 0.14);
-  height: 10px;
-}
-
-.mission-progress-fill {
-  height: 100%;
-  border-radius: 9999px;
-  background: linear-gradient(90deg, #48e5c2 0%, #66bfff 52%, #b490ff 100%);
-  box-shadow: 0 0 16px rgba(102, 191, 255, 0.42);
-}
-
-.mission-card-outline {
-  border-radius: 24px;
-  border: 1px solid rgba(130, 166, 214, 0.16);
-  background: rgba(9, 17, 30, 0.54);
+/* ============ 任务卡片彩色条 ============ */
+.task-stripe {
+  width: 5px;
+  border-radius: 3px;
+  min-height: 100%;
 }
 
 /* ============ 装饰云朵 ============ */
@@ -182,9 +191,13 @@ body {
   filter: blur(1px);
 }
 
-/* ============ 任务卡片彩色条 ============ */
-.task-stripe {
-  width: 5px;
-  border-radius: 3px;
-  min-height: 100%;
-}
+/* ===== 兼容旧 class (渐进迁移用) ===== */
+.mission-panel { @apply clay-card; }
+.mission-tag { @apply clay-tag; }
+.mission-stat { @apply clay-stat; }
+.mission-card-outline { @apply clay-outline; }
+.mission-progress-track { @apply clay-progress-track; }
+.mission-progress-fill { @apply clay-progress-fill; }
+.mission-grid { display: none; }
+.scene-noise { display: none; }
+.mission-orb { display: none; }

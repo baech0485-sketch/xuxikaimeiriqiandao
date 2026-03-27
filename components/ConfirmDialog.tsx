@@ -54,11 +54,11 @@ export default function ConfirmDialog({ show, taskEmoji, taskName, onConfirm, on
           <button
             type="button"
             aria-label="关闭确认弹窗"
-            className="absolute inset-0 bg-[#02060d]/75 backdrop-blur-sm"
+            className="absolute inset-0 bg-white/60 backdrop-blur-sm"
             onClick={onCancel}
           />
           <motion.div
-            className="mission-panel relative z-10 w-full max-w-sm p-8 text-center"
+            className="clay-card relative z-10 w-full max-w-sm p-8 text-center"
             initial={{ scale: 0.6, y: 40, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             exit={{ scale: 0.85, y: 20, opacity: 0 }}
@@ -69,23 +69,23 @@ export default function ConfirmDialog({ show, taskEmoji, taskName, onConfirm, on
             aria-labelledby="confirm-dialog-title"
             aria-describedby="confirm-dialog-desc"
           >
-            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-[24px] border border-amber-200/20 bg-[linear-gradient(135deg,rgba(255,209,102,0.18),rgba(255,122,162,0.14))] p-4">
+            <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-[24px] border-3 border-white/60 bg-gradient-to-br from-clay-gold-light to-clay-pink-light p-4 shadow-clay-sm">
               <span className="text-4xl">{taskEmoji}</span>
             </div>
-            <p className="mb-2 text-xs uppercase tracking-[0.22em] text-slate-400">task confirmation</p>
-            <p id="confirm-dialog-title" className="mb-2 text-lg font-bold leading-relaxed text-slate-100">
+            <p className="mb-2 text-xs font-bold uppercase tracking-widest text-clay-text-muted">Task Confirm</p>
+            <p id="confirm-dialog-title" className="mb-2 text-lg font-bold leading-relaxed text-clay-text">
               你完成了
-              <span className="text-sky-200"> {taskName} </span>
+              <span className="text-clay-primary"> {taskName} </span>
               吗？
             </p>
-            <p id="confirm-dialog-desc" className="mb-5 text-sm text-slate-400">
+            <p id="confirm-dialog-desc" className="mb-5 text-sm text-clay-text-muted">
               确认后会记录这项任务完成，并同步更新宠物状态。
             </p>
             <div className="flex gap-4">
               <button
                 type="button"
                 ref={confirmButtonRef}
-                className="flex-1 rounded-2xl border border-emerald-300/30 bg-emerald-400/18 px-4 py-4 text-base font-bold text-emerald-100 transition active:scale-95 select-none"
+                className="flex-1 rounded-2xl border-3 border-clay-mint/40 bg-clay-mint-light px-4 py-4 text-base font-bold text-clay-mint transition select-none shadow-clay-sm active:translate-y-0.5 active:shadow-clay-pressed"
                 style={{ touchAction: 'manipulation' }}
                 onClick={handleConfirm}
                 onTouchEnd={handleConfirm}
@@ -94,7 +94,7 @@ export default function ConfirmDialog({ show, taskEmoji, taskName, onConfirm, on
               </button>
               <button
                 type="button"
-                className="flex-1 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-base font-bold text-slate-300 transition active:scale-95 select-none"
+                className="flex-1 rounded-2xl border-2 border-white/50 bg-white/50 px-4 py-4 text-base font-bold text-clay-text-muted transition select-none shadow-clay-sm active:translate-y-0.5 active:shadow-clay-pressed"
                 style={{ touchAction: 'manipulation' }}
                 onClick={handleCancel}
                 onTouchEnd={handleCancel}

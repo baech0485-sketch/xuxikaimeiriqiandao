@@ -32,35 +32,19 @@ export default function AdoptPage() {
   }
 
   const cardColors = [
-    'from-[#FCF2F4] to-[#F9E8EC]',
-    'from-[#EFF6F9] to-[#E4EFF5]',
-    'from-[#EFF6F2] to-[#E4F0E8]',
-    'from-[#F9F5EE] to-[#F2ECE2]',
-    'from-[#F4F0F8] to-[#ECE6F2]',
+    'from-rose-50 to-pink-50 border-rose-200/60',
+    'from-sky-50 to-blue-50 border-sky-200/60',
+    'from-emerald-50 to-teal-50 border-emerald-200/60',
+    'from-amber-50 to-orange-50 border-amber-200/60',
+    'from-violet-50 to-purple-50 border-violet-200/60',
   ]
 
   return (
-    <main className="scene-bg flex flex-col items-center justify-center p-6 relative overflow-hidden">
-      {/* 装饰 */}
-      <div className="cloud top-12 animate-slide-cloud" style={{ opacity: 0.2 }}>☁️</div>
-      <div className="cloud top-24 animate-slide-cloud-2" style={{ animationDelay: '-10s', fontSize: '2rem', opacity: 0.15 }}>☁️</div>
-
-      {/* 装饰星星 */}
-      {[0,1,2].map(i => (
-        <motion.span
-          key={i}
-          className="fixed text-base pointer-events-none"
-          style={{
-            top: `${20 + i * 20}%`,
-            left: `${15 + i * 25}%`,
-            opacity: 0.12,
-          }}
-          animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.08, 0.15, 0.08] }}
-          transition={{ repeat: Infinity, duration: 3 + i * 0.5, delay: i * 0.4 }}
-        >
-          ✨
-        </motion.span>
-      ))}
+    <main className="scene-bg flex flex-col items-center justify-center p-6 relative overflow-hidden min-h-[100dvh]">
+      {/* 装饰泡泡 */}
+      <div className="clay-bubble left-[-40px] top-[10%] h-[120px] w-[120px] bg-clay-primary/8" />
+      <div className="clay-bubble right-[-30px] top-[30%] h-[80px] w-[80px] bg-clay-pink/10" />
+      <div className="clay-bubble left-[20%] bottom-[10%] h-[60px] w-[60px] bg-clay-gold/12" />
 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
@@ -77,10 +61,10 @@ export default function AdoptPage() {
           >
             <span className="text-5xl">🐾</span>
           </motion.div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-600 mb-2">
+          <h1 className="text-3xl md:text-4xl font-bold text-clay-text mb-2 font-display">
             选一只小伙伴吧！
           </h1>
-          <p className="text-base text-gray-400">它会陪你一起学习，一起成长~</p>
+          <p className="text-base text-clay-text-muted">它会陪你一起学习，一起成长~</p>
         </div>
 
         {/* 宠物卡片 */}
@@ -89,10 +73,10 @@ export default function AdoptPage() {
             <motion.button
               key={pet.type}
               className={`relative rounded-3xl p-4 md:p-5 flex flex-col items-center gap-2 w-[140px] md:w-[150px] transition-all duration-300
-                bg-gradient-to-b ${cardColors[i]}
+                bg-gradient-to-b ${cardColors[i]} border-2
                 ${selectedPet === i
-                  ? 'ring-4 ring-white shadow-kid-lg scale-[1.05]'
-                  : 'shadow-kid hover:shadow-kid-lg hover:scale-[1.02]'
+                  ? 'ring-4 ring-clay-primary/30 shadow-clay scale-[1.05]'
+                  : 'shadow-clay-sm hover:shadow-clay hover:scale-[1.02]'
                 }
               `}
               onClick={() => handleSelect(i)}
@@ -101,15 +85,14 @@ export default function AdoptPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
             >
-              {/* 选中指示 */}
               {selectedPet === i && (
                 <motion.div
-                  className="absolute -top-2 -right-2 w-8 h-8 bg-candy-mint rounded-full flex items-center justify-center text-white text-sm shadow-md border-2 border-white"
+                  className="absolute -top-2 -right-2 w-8 h-8 bg-clay-mint rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md border-2 border-white"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 500 }}
                 >
-                  ✓
+                  &#10003;
                 </motion.div>
               )}
 
@@ -123,9 +106,9 @@ export default function AdoptPage() {
                   <img src={pet.imagePng} alt={pet.name} className="w-full h-full object-contain drop-shadow-md" />
                 </picture>
               </motion.div>
-              <span className="font-bold text-gray-700 text-base">{pet.name}</span>
-              <span className="text-xs text-gray-400 leading-tight">{pet.personality}</span>
-              <div className="flex items-center gap-1 text-xs text-gray-500 bg-white/60 px-2 py-0.5 rounded-full">
+              <span className="font-bold text-clay-text text-base">{pet.name}</span>
+              <span className="text-xs text-clay-text-muted leading-tight">{pet.personality}</span>
+              <div className="flex items-center gap-1 text-xs text-clay-text-muted bg-white/60 px-2 py-0.5 rounded-full border border-white/40">
                 <span>{pet.foodEmoji}</span>
                 <span>{pet.food}</span>
               </div>
@@ -140,37 +123,37 @@ export default function AdoptPage() {
               initial={{ opacity: 0, y: 20, height: 0 }}
               animate={{ opacity: 1, y: 0, height: 'auto' }}
               exit={{ opacity: 0, y: 20, height: 0 }}
-              className="card-kid max-w-md mx-auto"
+              className="clay-card max-w-md mx-auto p-6"
             >
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-bold text-gray-500 mb-2 ml-1">你的名字</label>
+                  <label className="block text-sm font-bold text-clay-text-muted mb-2 ml-1">你的名字</label>
                   <input
                     type="text"
                     value={childName}
                     onChange={e => setChildName(e.target.value)}
                     placeholder="输入你的名字..."
-                    className="w-full px-5 py-3.5 rounded-2xl border-2 border-candy-blue/20 focus:border-candy-blue focus:outline-none text-lg bg-candy-blue-light/30 placeholder:text-gray-300 transition-colors"
+                    className="w-full px-5 py-3.5 rounded-2xl border-2 border-clay-primary/20 focus:border-clay-primary/40 focus:outline-none text-lg bg-white/60 placeholder:text-clay-text-light transition-colors text-clay-text shadow-clay-sm"
                     maxLength={10}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-500 mb-2 ml-1">给宠物取个名字</label>
+                  <label className="block text-sm font-bold text-clay-text-muted mb-2 ml-1">给宠物取个名字</label>
                   <input
                     type="text"
                     value={petName}
                     onChange={e => setPetName(e.target.value)}
                     placeholder="宠物的名字..."
-                    className="w-full px-5 py-3.5 rounded-2xl border-2 border-candy-pink/20 focus:border-candy-pink focus:outline-none text-lg bg-candy-pink-light/30 placeholder:text-gray-300 transition-colors"
+                    className="w-full px-5 py-3.5 rounded-2xl border-2 border-clay-pink/20 focus:border-clay-pink/40 focus:outline-none text-lg bg-white/60 placeholder:text-clay-text-light transition-colors text-clay-text shadow-clay-sm"
                     maxLength={10}
                   />
                 </div>
 
                 <motion.button
-                  className={`w-full btn-kid text-white text-xl shadow-kid transition-all
+                  className={`w-full btn-kid text-white text-xl transition-all
                     ${childName.trim() && petName.trim()
-                      ? 'bg-gradient-to-r from-candy-pink/80 via-candy-purple/80 to-candy-blue/80'
-                      : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
+                      ? 'bg-gradient-to-r from-clay-pink via-clay-primary to-clay-primary'
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none border-gray-200'
                     }
                   `}
                   onClick={handleAdopt}
@@ -200,7 +183,7 @@ export default function AdoptPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
+            <div className="absolute inset-0 bg-white/60 backdrop-blur-sm" />
 
             {Array.from({ length: 20 }).map((_, i) => (
               <motion.span
@@ -221,7 +204,7 @@ export default function AdoptPage() {
             ))}
 
             <motion.div
-              className="relative bg-white/95 backdrop-blur rounded-3xl px-10 py-8 shadow-kid-lg text-center max-w-xs"
+              className="relative clay-card px-10 py-8 text-center max-w-xs"
               initial={{ scale: 0, rotate: -10 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 250, delay: 0.1 }}
@@ -236,10 +219,10 @@ export default function AdoptPage() {
                   <img src={PET_TYPES[selectedPet].imagePng} alt="" className="w-full h-full object-contain" />
                 </picture>
               </motion.div>
-              <p className="text-2xl font-bold bg-gradient-to-r from-candy-pink to-candy-purple bg-clip-text text-transparent">
+              <p className="text-2xl font-bold font-display bg-gradient-to-r from-clay-pink to-clay-primary bg-clip-text text-transparent">
                 领养成功！
               </p>
-              <p className="text-gray-500 mt-2 text-base">{petName} 成为你的小伙伴啦~</p>
+              <p className="text-clay-text-muted mt-2 text-base">{petName} 成为你的小伙伴啦~</p>
             </motion.div>
           </motion.div>
         )}

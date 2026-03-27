@@ -25,7 +25,6 @@ interface PetDisplayProps {
   riveFile?: string
 }
 
-/* ─── 触摸爱心粒子 ─── */
 interface TapParticle {
   id: number
   x: number
@@ -36,7 +35,6 @@ interface TapParticle {
 const TAP_EMOJIS = ['💖', '💕', '✨', '🌟', '❤️', '💗']
 let particleId = 0
 
-/* ─── 心情动画配置 ─── */
 const BREATHING = {
   happy: { scale: [1, 1.035, 1], duration: 2.8 },
   hungry: { scale: [1, 1.02, 1], duration: 2.2 },
@@ -57,7 +55,6 @@ export default function PetDisplay({
   const [blinkPhase, setBlinkPhase] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  /* ─── 自动眨眼 ─── */
   useEffect(() => {
     if (mood === 'runaway') return
     const blink = () => {
@@ -66,20 +63,17 @@ export default function PetDisplay({
     }
     const interval = setInterval(() => {
       blink()
-      // 偶尔连眨两下
       if (Math.random() > 0.6) setTimeout(blink, 300)
     }, 3000 + Math.random() * 2000)
     return () => clearInterval(interval)
   }, [mood])
 
-  /* ─── 触摸交互 ─── */
   const handleTap = useCallback(() => {
     if (mood === 'runaway') return
     playPetTapSound()
     setIsTapped(true)
     setTimeout(() => setIsTapped(false), 400)
 
-    // 生成爱心粒子
     const newParticles: TapParticle[] = Array.from({ length: 4 }, () => ({
       id: particleId++,
       x: (Math.random() - 0.5) * 100,
@@ -98,7 +92,6 @@ export default function PetDisplay({
     <div className="flex flex-col items-center justify-center gap-2">
       <AnimatePresence mode="wait">
         {mood === 'runaway' ? (
-          /* ─── 出走状态 ─── */
           <motion.div
             key="runaway"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -106,24 +99,24 @@ export default function PetDisplay({
             className="py-4 text-center"
           >
             <div className="relative mx-auto w-36 h-28 mb-4">
-              <div className="absolute bottom-0 h-16 w-full rounded-[50%] border border-amber-300/20 bg-gradient-to-t from-amber-300/15 to-amber-100/5" />
+              <div className="absolute bottom-0 h-16 w-full rounded-[50%] border-2 border-clay-amber/20 bg-gradient-to-t from-clay-amber-light/40 to-transparent" />
               <div className="absolute bottom-3 w-full text-center text-4xl opacity-20">🏠</div>
             </div>
-            <div className="mx-auto max-w-[240px] rounded-[24px] border border-dashed border-amber-300/25 bg-amber-200/10 p-4 backdrop-blur-sm">
-              <p className="mb-1.5 text-xs font-bold uppercase tracking-[0.18em] text-amber-200">一封离站信号</p>
-              <p className="text-sm leading-relaxed text-amber-50/80">
+            <div className="mx-auto max-w-[240px] rounded-[24px] border-2 border-dashed border-clay-amber/30 bg-clay-amber-light/40 p-4">
+              <p className="mb-1.5 text-xs font-bold uppercase tracking-widest text-clay-amber">一封小信</p>
+              <p className="text-sm leading-relaxed text-clay-text-muted">
                 亲爱的主人，我饿了好几天了...
                 <br />完成全部任务找回我吧！
               </p>
               {recallProgress > 0 && (
-                <div className="mt-3 rounded-xl bg-black/20 p-2">
-                  <p className="mb-1 text-[10px] text-amber-200/70">召回进度 {recallProgress}/3</p>
+                <div className="mt-3 rounded-xl border-2 border-white/40 bg-white/40 p-2">
+                  <p className="mb-1 text-[10px] font-bold text-clay-text-muted">召回进度 {recallProgress}/3</p>
                   <div className="flex gap-1 justify-center">
                     {[0, 1, 2].map(i => (
                       <div
                         key={i}
-                        className={`h-2 flex-1 rounded-full transition-all duration-500 ${
-                          i < recallProgress ? 'bg-emerald-300' : 'bg-white/10'
+                        className={`h-2.5 flex-1 rounded-full border border-white/40 transition-all duration-500 ${
+                          i < recallProgress ? 'bg-clay-mint' : 'bg-white/30'
                         }`}
                       />
                     ))}
@@ -133,7 +126,6 @@ export default function PetDisplay({
             </div>
           </motion.div>
         ) : (
-          /* ─── 活跃宠物状态 ─── */
           <motion.div
             key="pet"
             className="relative py-4 cursor-pointer select-none"
@@ -141,16 +133,14 @@ export default function PetDisplay({
             onClick={handleTap}
             style={{ touchAction: 'manipulation' }}
           >
-            {/* ── 柔和光晕 ── */}
             <motion.div
               className={`absolute inset-0 -m-8 rounded-full blur-3xl ${
-                mood === 'happy' ? 'bg-candy-yellow-light' : mood === 'hungry' ? 'bg-candy-orange-light' : 'bg-gray-200'
+                mood === 'happy' ? 'bg-clay-gold-light' : mood === 'hungry' ? 'bg-clay-amber-light' : 'bg-gray-100'
               }`}
-              animate={{ opacity: [0.1, 0.2, 0.1], scale: [0.95, 1.05, 0.95] }}
+              animate={{ opacity: [0.3, 0.5, 0.3], scale: [0.95, 1.05, 0.95] }}
               transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
             />
 
-            {/* ── 环境粒子 ── */}
             {mood === 'happy' && (
               <>
                 {[0, 1, 2, 3].map(i => (
@@ -204,7 +194,6 @@ export default function PetDisplay({
               </>
             )}
 
-            {/* ── 触摸爱心粒子 ── */}
             <AnimatePresence>
               {tapParticles.map(p => (
                 <motion.span
@@ -227,7 +216,6 @@ export default function PetDisplay({
               ))}
             </AnimatePresence>
 
-            {/* ── 宠物主体 ── */}
             <motion.div
               animate={{
                 scale: isTapped ? [1, 1.15, 0.92, 1.05, 1] : breathing.scale,
@@ -283,7 +271,6 @@ export default function PetDisplay({
                   <span className="text-[100px] leading-none block">{petEmoji}</span>
                 )}
 
-                {/* ── 眨眼遮罩 ── */}
                 <AnimatePresence>
                   {blinkPhase && (
                     <motion.div
@@ -301,9 +288,8 @@ export default function PetDisplay({
                   )}
                 </AnimatePresence>
 
-                {/* ── 影子 ── */}
                 <motion.div
-                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-20 h-3 bg-black/5 rounded-[50%] blur-[2px]"
+                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-20 h-3 bg-clay-primary/5 rounded-[50%] blur-[2px]"
                   animate={{
                     scaleX: isTapped ? [1, 0.7, 1.1, 1] : (mood === 'happy' ? [1, 0.92, 1] : 1),
                     opacity: isTapped ? [0.5, 0.3, 0.6, 0.5] : [0.5, 0.4, 0.5],
@@ -320,23 +306,21 @@ export default function PetDisplay({
         )}
       </AnimatePresence>
 
-      <p className="font-display text-xl font-bold tracking-[0.08em] text-white">{petName}</p>
+      <p className="font-display text-xl font-bold text-clay-text">{petName}</p>
 
-      {/* ── 心情气泡 ── */}
       {mood !== 'runaway' && (
         <motion.div
-          className="relative rounded-2xl border border-white/10 bg-white/8 px-4 py-2 backdrop-blur-sm"
+          className="relative rounded-2xl border-2 border-white/50 bg-white/50 px-4 py-2 shadow-clay-sm"
           animate={isTapped ? { scale: [1, 1.08, 1] } : {}}
           transition={{ duration: 0.3 }}
         >
-          <div className="absolute -top-1.5 left-1/2 h-0 w-0 -translate-x-1/2 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-white/8" />
-          <p className="text-center text-xs text-slate-200/80">
+          <div className="absolute -top-1.5 left-1/2 h-0 w-0 -translate-x-1/2 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-white/50" />
+          <p className="text-center text-xs font-semibold text-clay-text-muted">
             {isTapped ? '嘻嘻~好痒呀！' : isEating ? '好好吃呀~谢谢你喂我！' : moodInfo.message}
           </p>
         </motion.div>
       )}
 
-      {/* ── 饱食度 ── */}
       {mood !== 'runaway' && (
         <div className="mt-0.5 flex gap-0.5">
           {[0, 1, 2, 3, 4].map(i => (

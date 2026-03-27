@@ -97,16 +97,16 @@ export default function WeekCalendar({
   const fullCount = days.filter(day => day.status === 'full').length
 
   return (
-    <div className="mission-panel p-5 md:p-6">
+    <div className="clay-card p-5 md:p-6">
       <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <div className="mission-tag mb-3">weekly orbit</div>
-          <h3 className="font-display text-2xl font-bold tracking-[0.08em] text-white">本周轨道</h3>
-          <p className="mt-2 text-sm text-slate-400">完成整天任务即可点亮一枚星标，未领取的星星会持续闪烁提示。</p>
+          <div className="clay-tag mb-3">Weekly</div>
+          <h3 className="font-display text-2xl font-bold text-clay-text">本周记录</h3>
+          <p className="mt-2 text-sm text-clay-text-muted">完成整天任务即可收集一颗星星！</p>
         </div>
 
-        <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-300">
-          <span className="text-emerald-300">●</span>
+        <div className="flex items-center gap-2 rounded-full border-2 border-clay-mint/20 bg-clay-mint-light px-4 py-2 text-sm font-bold text-clay-mint">
+          <span>&#11088;</span>
           <span>{fullCount} 天达标</span>
         </div>
       </div>
@@ -121,31 +121,31 @@ export default function WeekCalendar({
           return (
             <motion.div
               key={day.date}
-              className={`relative overflow-hidden rounded-[24px] border px-4 py-4 ${
+              className={`relative overflow-hidden rounded-[24px] border-2 px-4 py-4 ${
                 day.isToday
-                  ? 'border-sky-300/35 bg-sky-300/8'
+                  ? 'border-clay-primary/35 bg-clay-primary-light/50 shadow-clay-sm'
                   : isFull
-                    ? 'border-emerald-300/20 bg-emerald-400/8'
-                    : 'border-white/10 bg-white/[0.03]'
+                    ? 'border-clay-gold/30 bg-clay-gold-light/50 shadow-clay-sm'
+                    : 'border-white/50 bg-white/40'
               }`}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.04, duration: 0.3 }}
             >
               <div className="mb-4 flex items-center justify-between">
-                <span className={`text-xs font-bold uppercase tracking-[0.18em] ${day.isToday ? 'text-sky-200' : 'text-slate-400'}`}>
+                <span className={`text-xs font-bold uppercase tracking-widest ${day.isToday ? 'text-clay-primary' : 'text-clay-text-muted'}`}>
                   周{day.label}
                 </span>
-                <span className="font-display text-xl text-white">{day.dayNum}</span>
+                <span className="font-display text-xl font-bold text-clay-text">{day.dayNum}</span>
               </div>
 
               {isFull ? (
                 <button
                   type="button"
-                  className={`relative flex w-full flex-col items-start rounded-[20px] border px-4 py-4 text-left transition ${
+                  className={`relative flex w-full flex-col items-start rounded-[20px] border-2 px-4 py-4 text-left transition ${
                     day.starCollected
-                      ? 'border-emerald-300/25 bg-emerald-400/12'
-                      : 'cursor-pointer border-amber-300/25 bg-amber-300/12 hover:border-amber-200/40 hover:bg-amber-200/14'
+                      ? 'border-clay-mint/30 bg-clay-mint-light/60'
+                      : 'cursor-pointer border-clay-gold/30 bg-clay-gold-light hover:border-clay-gold/50 hover:shadow-clay-sm'
                   }`}
                   onClick={event => {
                     if (day.starCollected || !onCollectStar) return
@@ -154,48 +154,48 @@ export default function WeekCalendar({
                 >
                   {!day.starCollected && (
                     <motion.span
-                      className="absolute right-3 top-2 text-xs text-amber-200"
+                      className="absolute right-3 top-2 text-xs text-clay-gold"
                       animate={{ opacity: [0.25, 0.9, 0.25], scale: [0.8, 1.08, 0.8] }}
                       transition={{ repeat: Infinity, duration: 2, delay: idx * 0.1 }}
                     >
-                      ✦
+                      &#10024;
                     </motion.span>
                   )}
-                  <span className="text-xs uppercase tracking-[0.18em] text-slate-300">
-                    {day.starCollected ? '已归档' : '待领取'}
+                  <span className="text-xs font-bold uppercase tracking-widest text-clay-text-muted">
+                    {day.starCollected ? '已收集' : '待领取'}
                   </span>
-                  <span className="mt-3 text-3xl text-amber-200">{day.starCollected ? '✓' : '⭐'}</span>
-                  <span className="mt-3 text-sm text-white">{day.starCollected ? '星标已回收' : '点击收集星标'}</span>
+                  <span className="mt-3 text-3xl">{day.starCollected ? '&#10003;' : '&#11088;'}</span>
+                  <span className="mt-3 text-sm font-bold text-clay-text">{day.starCollected ? '星星已收集' : '点击收集星星'}</span>
                 </button>
               ) : isPartial ? (
-                <div className="rounded-[20px] border border-sky-300/14 bg-slate-950/50 px-4 py-4">
-                  <div className="mb-3 flex items-center justify-between text-sm text-slate-300">
+                <div className="rounded-[20px] border-2 border-clay-amber/20 bg-clay-amber-light/40 px-4 py-4">
+                  <div className="mb-3 flex items-center justify-between text-sm font-bold text-clay-text-muted">
                     <span>进行中</span>
                     <span>{day.doneCount}/{day.totalTasks}</span>
                   </div>
-                  <div className="mission-progress-track h-2.5">
+                  <div className="clay-progress-track h-2.5">
                     <motion.div
-                      className="mission-progress-fill"
+                      className="clay-progress-fill"
                       initial={{ width: 0 }}
                       animate={{ width: `${progress}%` }}
                       transition={{ duration: 0.6, ease: 'easeOut' }}
                     />
                   </div>
-                  <p className="mt-3 text-xs text-slate-400">继续推进，今天还有任务窗口可以完成。</p>
+                  <p className="mt-3 text-xs text-clay-text-muted">继续加油，今天还有任务可以完成！</p>
                 </div>
               ) : isFuture ? (
-                <div className="rounded-[20px] border border-white/6 bg-slate-950/20 px-4 py-4 text-sm text-slate-500">
-                  未来窗口
+                <div className="rounded-[20px] border-2 border-dashed border-white/40 bg-white/20 px-4 py-4 text-sm text-clay-text-light">
+                  还没到哦
                 </div>
               ) : (
-                <div className="rounded-[20px] border border-dashed border-white/10 bg-slate-950/35 px-4 py-4 text-sm text-slate-500">
-                  尚未点亮
+                <div className="rounded-[20px] border-2 border-dashed border-white/40 bg-white/20 px-4 py-4 text-sm text-clay-text-light">
+                  尚未开始
                 </div>
               )}
 
               {day.isToday && (
                 <motion.div
-                  className="pointer-events-none absolute inset-0 rounded-[24px] border border-sky-200/35"
+                  className="pointer-events-none absolute inset-0 rounded-[24px] border-2 border-clay-primary/30"
                   animate={{ opacity: [0.35, 0.8, 0.35] }}
                   transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
                 />
