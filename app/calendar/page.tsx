@@ -1,7 +1,7 @@
 'use client'
 
+import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
 import { TASKS } from '@/lib/constants'
 
 interface DayRecord {
@@ -29,7 +29,9 @@ export default function CalendarPage() {
       .then(data => setRecords(data.records || []))
     fetch('/api/user')
       .then(r => r.json())
-      .then(data => { if (data.user) setStats(data.user.stats) })
+      .then(data => {
+        if (data.user) setStats(data.user.stats)
+      })
   }, [currentMonth])
 
   const [year, month] = currentMonth.split('-').map(Number)
@@ -41,6 +43,7 @@ export default function CalendarPage() {
     const d = new Date(year, month - 2, 1)
     setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
   }
+
   const nextMonth = () => {
     const d = new Date(year, month, 1)
     setCurrentMonth(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`)
@@ -57,130 +60,179 @@ export default function CalendarPage() {
     const record = getRecordForDay(day)
     if (!record) return 'none'
     if (record.allCompleted) return 'full'
-    const doneCount = Object.values(record.tasks).filter(t => t.done).length
+    const doneCount = Object.values(record.tasks).filter(task => task.done).length
     return doneCount > 0 ? 'partial' : 'none'
   }
 
   const statCards = [
-    { value: stats.totalStars, label: '总金星', emoji: '⭐', bg: 'from-candy-yellow-light/60 to-candy-yellow-light/30', color: 'text-gray-600' },
-    { value: stats.streak, label: '连续天数', emoji: '🔥', bg: 'from-candy-orange-light/60 to-candy-orange-light/30', color: 'text-gray-600' },
-    { value: stats.totalDays, label: '总打卡', emoji: '📅', bg: 'from-candy-mint-light/60 to-candy-mint-light/30', color: 'text-gray-600' },
+    { value: stats.totalStars, label: '总星能', detail: '累计回收', accent: 'text-amber-200' },
+    { value: stats.streak, label: '连续天数', detail: '持续运行', accent: 'text-rose-200' },
+    { value: stats.totalDays, label: '总打卡', detail: '完成记录', accent: 'text-emerald-200' },
   ]
 
   return (
-    <main className="scene-bg pb-8">
-      {/* 云朵 */}
-      <div className="cloud top-16 animate-slide-cloud" style={{ opacity: 0.15 }}>☁️</div>
+    <main className="scene-bg min-h-[100dvh] overflow-hidden pb-10">
+      <div className="mission-grid" />
+      <div className="scene-noise" />
+      <div className="mission-orb left-[-120px] top-[60px] h-[240px] w-[240px] bg-sky-400/14" />
 
-      {/* 顶部 */}
-      <header className="sticky top-0 z-30 px-4 py-2">
-        <div className="max-w-lg mx-auto bg-white/85 backdrop-blur-xl rounded-2xl shadow-kid px-5 py-2.5 flex items-center justify-between">
-          <a href="/" className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-lg hover:bg-gray-200 transition-colors">
-            ←
-          </a>
-          <h1 className="text-base font-bold text-gray-800">📅 打卡日历</h1>
-          <div className="w-10" />
-        </div>
-      </header>
-
-      <div className="max-w-lg mx-auto px-4 pt-4 relative z-10">
-        {/* 统计卡片 */}
-        <div className="grid grid-cols-3 gap-3 mb-5">
-          {statCards.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08 }}
-              className={`rounded-2xl p-3 text-center bg-gradient-to-b ${s.bg} shadow-kid`}
-            >
-              <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-              <p className="text-[11px] text-gray-400 mt-0.5">{s.emoji} {s.label}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* 月历 */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="card-kid"
-        >
-          {/* 月份导航 */}
-          <div className="flex items-center justify-between mb-4">
-            <button onClick={prevMonth} className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-lg hover:bg-gray-200 active:scale-90 transition-all">
-              ←
-            </button>
-            <h2 className="text-lg font-bold text-gray-700">{year}年{month}月</h2>
-            <button onClick={nextMonth} className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-lg hover:bg-gray-200 active:scale-90 transition-all">
-              →
-            </button>
-          </div>
-
-          {/* 星期头 */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {WEEKDAY_LABELS.map(l => (
-              <div key={l} className="text-center text-xs text-gray-400 py-1 font-bold">{l}</div>
-            ))}
-          </div>
-
-          {/* 日期格子 */}
-          <div className="grid grid-cols-7 gap-1.5">
-            {Array.from({ length: firstDay }).map((_, i) => <div key={`e-${i}`} />)}
-            {Array.from({ length: daysInMonth }).map((_, i) => {
-              const day = i + 1
-              const status = getDayStatus(day)
-              const dateStr = `${currentMonth}-${String(day).padStart(2, '0')}`
-              const isToday = dateStr === today
-
-              const styles: Record<string, string> = {
-                full: 'bg-candy-mint/50 text-gray-600 shadow-sm',
-                partial: 'bg-candy-yellow-light/60 text-gray-500',
-                none: 'bg-gray-50/60 text-gray-400',
-                future: 'bg-transparent text-gray-200',
-              }
-
-              return (
-                <motion.button
-                  key={day}
-                  className={`aspect-square rounded-xl flex flex-col items-center justify-center text-sm font-bold transition-all
-                    ${styles[status]}
-                    ${isToday ? 'ring-2 ring-candy-blue ring-offset-1' : ''}
-                    ${status !== 'future' && status !== 'none' ? 'cursor-pointer active:scale-90' : ''}
-                  `}
-                  onClick={() => {
-                    if (status !== 'future') {
-                      const record = getRecordForDay(day)
-                      if (record) setSelectedDay(record)
-                    }
-                  }}
-                  whileTap={status !== 'future' ? { scale: 0.88 } : undefined}
+      <div className="relative z-10 px-4 pt-4 md:px-6">
+        <header className="mx-auto max-w-6xl">
+          <div className="mission-panel px-4 py-4 md:px-6">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center gap-4">
+                <a
+                  href="/"
+                  className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-100 transition hover:border-sky-300/30 hover:bg-sky-300/10"
+                  aria-label="返回首页"
                 >
-                  <span className="text-xs">{day}</span>
-                  {status === 'full' && <span className="text-[9px] leading-none">✓</span>}
-                </motion.button>
-              )
-            })}
-          </div>
-
-          {/* 图例 */}
-          <div className="flex gap-5 justify-center mt-4">
-            {[
-              { color: 'bg-candy-mint', label: '全勤' },
-              { color: 'bg-candy-yellow', label: '部分' },
-              { color: 'bg-gray-200', label: '未完成' },
-            ].map(item => (
-              <div key={item.label} className="flex items-center gap-1.5 text-xs text-gray-400">
-                <div className={`w-3 h-3 rounded-sm ${item.color}`} />
-                <span>{item.label}</span>
+                  <span className="sr-only">返回首页</span>
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="m15 18-6-6 6-6" />
+                  </svg>
+                </a>
+                <div>
+                  <div className="mission-tag mb-2">calendar orbit</div>
+                  <h1 className="font-display text-3xl font-bold tracking-[0.08em] text-white">打卡日历</h1>
+                  <p className="mt-1 text-sm text-slate-400">查看整月任务轨迹，定位全勤日、部分推进日和空白窗口。</p>
+                </div>
               </div>
-            ))}
+
+              <div className="grid grid-cols-3 gap-3 md:min-w-[360px]">
+                {statCards.map(card => (
+                  <div key={card.label} className="mission-card-outline p-4 text-center">
+                    <p className={`font-display text-3xl font-bold ${card.accent}`}>{card.value}</p>
+                    <p className="mt-2 text-xs uppercase tracking-[0.16em] text-slate-400">{card.label}</p>
+                    <p className="mt-1 text-[11px] text-slate-500">{card.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </motion.div>
+        </header>
+
+        <div className="mx-auto mt-6 grid max-w-6xl gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+          <section className="mission-panel p-5 md:p-6">
+            <div className="mb-6 flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={prevMonth}
+                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-100 transition hover:border-sky-300/30 hover:bg-sky-300/10"
+                aria-label="查看上个月"
+              >
+                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+              </button>
+              <div className="text-center">
+                <p className="text-xs uppercase tracking-[0.2em] text-slate-500">month view</p>
+                <h2 className="font-display text-3xl font-bold text-white">{year}.{String(month).padStart(2, '0')}</h2>
+              </div>
+              <button
+                type="button"
+                onClick={nextMonth}
+                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-slate-100 transition hover:border-sky-300/30 hover:bg-sky-300/10"
+                aria-label="查看下个月"
+              >
+                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-7 gap-2 rounded-[24px] border border-white/8 bg-black/10 p-3">
+              {WEEKDAY_LABELS.map(label => (
+                <div key={label} className="py-2 text-center text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
+                  {label}
+                </div>
+              ))}
+
+              {Array.from({ length: firstDay }, (_, offset) => offset + 1).map(fillDay => (
+                <div key={`empty-${currentMonth}-${fillDay}`} />
+              ))}
+
+              {Array.from({ length: daysInMonth }).map((_, index) => {
+                const day = index + 1
+                const status = getDayStatus(day)
+                const dateStr = `${currentMonth}-${String(day).padStart(2, '0')}`
+                const isToday = dateStr === today
+                const record = getRecordForDay(day)
+                const doneCount = record ? Object.values(record.tasks).filter(task => task.done).length : 0
+
+                const statusStyle: Record<string, string> = {
+                  full: 'border-emerald-300/20 bg-emerald-400/12 text-white',
+                  partial: 'border-amber-300/20 bg-amber-300/10 text-white',
+                  none: 'border-white/8 bg-white/[0.03] text-slate-400',
+                  future: 'border-white/5 bg-transparent text-slate-600',
+                }
+
+                return (
+                  <motion.button
+                    type="button"
+                    key={day}
+                    className={`relative aspect-square rounded-[20px] border p-2 text-left transition ${statusStyle[status]} ${
+                      isToday ? 'ring-2 ring-sky-300/55 ring-offset-0' : ''
+                    } ${status !== 'future' ? 'hover:-translate-y-0.5' : ''}`}
+                    onClick={() => {
+                      if (status === 'future') return
+                      if (record) setSelectedDay(record)
+                    }}
+                    whileTap={status !== 'future' ? { scale: 0.95 } : undefined}
+                  >
+                    <div className="flex h-full flex-col justify-between">
+                      <span className="font-display text-xl font-bold">{day}</span>
+                      {status === 'full' ? (
+                        <span className="text-xs text-emerald-200">FULL</span>
+                      ) : status === 'partial' ? (
+                        <span className="text-xs text-amber-200">{doneCount}项</span>
+                      ) : status === 'none' ? (
+                        <span className="text-xs text-slate-500">待机</span>
+                      ) : null}
+                    </div>
+                  </motion.button>
+                )
+              })}
+            </div>
+          </section>
+
+          <aside className="flex flex-col gap-6">
+            <div className="mission-panel p-5">
+              <div className="mission-tag mb-3">signal legend</div>
+              <div className="space-y-3">
+                {[
+                  ['bg-emerald-400/18 border-emerald-300/20', '全勤完成，整天任务全部点亮'],
+                  ['bg-amber-300/14 border-amber-300/20', '部分推进，仍可继续补足'],
+                  ['bg-white/[0.03] border-white/8', '当天尚未开始记录'],
+                ].map(([style, text]) => (
+                  <div key={text} className="flex items-center gap-3 text-sm text-slate-300">
+                    <div className={`h-4 w-4 rounded-md border ${style}`} />
+                    <span>{text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mission-panel p-5">
+              <div className="mission-tag mb-3">monthly brief</div>
+              <div className="grid gap-3">
+                <div className="mission-card-outline p-4">
+                  <p className="text-xs uppercase tracking-[0.16em] text-slate-500">本月记录天数</p>
+                  <p className="mt-2 font-display text-3xl text-white">{records.length}</p>
+                </div>
+                <div className="mission-card-outline p-4">
+                  <p className="text-xs uppercase tracking-[0.16em] text-slate-500">全勤天数</p>
+                  <p className="mt-2 font-display text-3xl text-white">{records.filter(record => record.allCompleted).length}</p>
+                </div>
+                <div className="mission-card-outline p-4">
+                  <p className="text-xs uppercase tracking-[0.16em] text-slate-500">星能累计</p>
+                  <p className="mt-2 font-display text-3xl text-white">{records.reduce((sum, record) => sum + (record.starsEarned || 0), 0)}</p>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
       </div>
 
-      {/* 日详情 */}
       <AnimatePresence>
         {selectedDay && (
           <motion.div
@@ -189,44 +241,50 @@ export default function CalendarPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <motion.div
-              className="absolute inset-0 bg-black/25 backdrop-blur-sm"
+            <button
+              type="button"
+              className="absolute inset-0 bg-[#02060d]/78 backdrop-blur-sm"
+              aria-label="关闭当天详情"
               onClick={() => setSelectedDay(null)}
             />
             <motion.div
-              className="relative bg-white rounded-3xl p-6 shadow-kid-lg max-w-sm w-full"
-              initial={{ scale: 0.85, y: 30 }}
+              className="mission-panel relative z-10 w-full max-w-md p-6"
+              initial={{ scale: 0.9, y: 30 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.85, y: 30 }}
+              exit={{ scale: 0.9, y: 30 }}
               transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="calendar-day-title"
             >
-              <h3 className="text-lg font-bold text-center text-gray-700 mb-4">
-                {selectedDay.date.replace(/-/g, '.')}
-                {selectedDay.allCompleted && ' ⭐'}
-              </h3>
+              <div className="mb-5 flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.18em] text-slate-500">daily detail</p>
+                  <h3 id="calendar-day-title" className="mt-2 font-display text-2xl font-bold text-white">
+                    {selectedDay.date.replace(/-/g, '.')}
+                  </h3>
+                </div>
+                {selectedDay.allCompleted && <span className="rounded-full bg-amber-300/12 px-3 py-1 text-xs font-bold text-amber-200">FULL STAR</span>}
+              </div>
 
               <div className="space-y-2">
                 {TASKS.map(task => {
-                  const t = selectedDay.tasks[task.key]
+                  const taskState = selectedDay.tasks[task.key]
                   return (
                     <div
                       key={task.key}
-                      className={`flex items-center gap-3 p-3 rounded-2xl transition-colors ${
-                        t?.done ? 'bg-green-50 border border-green-100' : 'bg-gray-50 border border-gray-100'
+                      className={`flex items-center gap-3 rounded-[22px] border p-3 ${
+                        taskState?.done ? 'border-emerald-300/18 bg-emerald-400/10' : 'border-white/8 bg-white/[0.03]'
                       }`}
                     >
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${
-                        t?.done ? 'bg-green-100' : 'bg-gray-100'
-                      }`}>
+                      <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${taskState?.done ? 'bg-emerald-400/14' : 'bg-white/5'}`}>
                         {task.emoji}
                       </div>
-                      <span className={`flex-grow font-bold text-sm ${t?.done ? 'text-green-600' : 'text-gray-400'}`}>
-                        {task.name}
-                      </span>
-                      {t?.done ? (
-                        <span className="text-xs text-green-500 bg-green-100 px-2 py-0.5 rounded-full">{t.completedAt}</span>
+                      <span className={`flex-grow text-sm font-bold ${taskState?.done ? 'text-white' : 'text-slate-400'}`}>{task.name}</span>
+                      {taskState?.done ? (
+                        <span className="rounded-full bg-emerald-400/12 px-2 py-1 text-xs text-emerald-200">{taskState.completedAt}</span>
                       ) : (
-                        <span className="text-xs text-gray-300">未完成</span>
+                        <span className="text-xs text-slate-500">未完成</span>
                       )}
                     </div>
                   )
@@ -234,10 +292,11 @@ export default function CalendarPage() {
               </div>
 
               <button
+                type="button"
                 onClick={() => setSelectedDay(null)}
-                className="w-full mt-4 btn-kid bg-gray-100 text-gray-400 text-base"
+                className="mt-5 w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-bold text-slate-200 transition hover:bg-white/10"
               >
-                关闭
+                关闭详情
               </button>
             </motion.div>
           </motion.div>
