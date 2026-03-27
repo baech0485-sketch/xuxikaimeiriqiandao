@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;800&family=Tektur:wght@500;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
 
 :root {
   --candy-pink: #E8A0B4;
@@ -18,11 +18,15 @@
 }
 
 body {
-  font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', cursive, sans-serif;
+  font-family: 'Noto Sans SC', sans-serif;
   min-height: 100vh;
   user-select: none;
   overflow-x: hidden;
-  background: #EDF3F0;
+  background:
+    radial-gradient(circle at top, rgba(65, 102, 164, 0.28), transparent 36%),
+    radial-gradient(circle at 20% 18%, rgba(0, 202, 255, 0.14), transparent 24%),
+    linear-gradient(180deg, #07111d 0%, #09182a 52%, #050b14 100%);
+  color: #ecf4ff;
 }
 
 /* ============ 按钮 ============ */
@@ -41,9 +45,12 @@ body {
   box-shadow: 0 2px 12px rgba(0,0,0,0.04), 0 0 0 1px rgba(255,255,255,0.7) inset;
 }
 
-/* ============ 场景背景（柔和护眼） ============ */
+/* ============ 场景背景（夜间观测站） ============ */
 .scene-bg {
-  background: linear-gradient(180deg, #D6E8F0 0%, #E2EEE8 40%, #E8F0E2 70%, #D6EDDE 100%);
+  background:
+    radial-gradient(circle at top, rgba(65, 102, 164, 0.28), transparent 36%),
+    radial-gradient(circle at 20% 18%, rgba(0, 202, 255, 0.14), transparent 24%),
+    linear-gradient(180deg, #07111d 0%, #09182a 52%, #050b14 100%);
   background-attachment: fixed;
   min-height: 100vh;
   position: relative;
@@ -63,6 +70,105 @@ body {
 .progress-bar-fill {
   @apply rounded-full h-full transition-all duration-700 ease-out;
   background: linear-gradient(90deg, #B8D8A8, #8CBFD6, #B8A0D6);
+}
+
+.mission-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image:
+    linear-gradient(rgba(135, 166, 215, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(135, 166, 215, 0.12) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.9), transparent 88%);
+}
+
+.scene-noise {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.9) 0.6px, transparent 0.7px),
+    radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.6) 0.6px, transparent 0.7px),
+    radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.8) 0.8px, transparent 0.9px);
+  background-size: 140px 140px, 180px 180px, 220px 220px;
+}
+
+.mission-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  pointer-events: none;
+}
+
+.font-display {
+  font-family: 'Tektur', 'Noto Sans SC', sans-serif;
+}
+
+.mission-panel {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid rgba(140, 191, 214, 0.18);
+  background: linear-gradient(180deg, rgba(10, 21, 36, 0.9) 0%, rgba(7, 14, 25, 0.82) 100%);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 0 0 1px rgba(91, 141, 208, 0.05);
+  backdrop-filter: blur(18px);
+}
+
+.mission-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(102, 191, 255, 0.1), transparent 34%, transparent 66%, rgba(163, 112, 255, 0.08));
+}
+
+.mission-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(140, 191, 214, 0.18);
+  background: rgba(10, 20, 34, 0.66);
+  padding: 0.38rem 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(198, 223, 255, 0.78);
+}
+
+.mission-stat {
+  border-radius: 22px;
+  border: 1px solid rgba(137, 172, 221, 0.14);
+  background: rgba(7, 15, 26, 0.6);
+  padding: 1rem;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.mission-progress-track {
+  overflow: hidden;
+  border-radius: 9999px;
+  background: rgba(131, 159, 201, 0.14);
+  height: 10px;
+}
+
+.mission-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #48e5c2 0%, #66bfff 52%, #b490ff 100%);
+  box-shadow: 0 0 16px rgba(102, 191, 255, 0.42);
+}
+
+.mission-card-outline {
+  border-radius: 24px;
+  border: 1px solid rgba(130, 166, 214, 0.16);
+  background: rgba(9, 17, 30, 0.54);
 }
 
 /* ============ 装饰云朵 ============ */
