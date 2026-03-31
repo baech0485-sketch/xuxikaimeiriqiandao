@@ -5,15 +5,37 @@
 @tailwind utilities;
 
 :root {
-  --clay-primary: #7C6AEF;
-  --clay-pink: #FF8FAB;
-  --clay-mint: #5CD4A0;
-  --clay-amber: #FFB347;
-  --clay-gold: #FFD93D;
-  --clay-text: #2D1B69;
-  --clay-text-muted: #7B6F8E;
-  --clay-bg-start: #FFF8F0;
-  --clay-bg-end: #F0E6FF;
+  /* 多邻国风格主色 */
+  --duo-green: #58CC02;
+  --duo-green-dark: #46A302;
+  --duo-green-light: #D7FFB8;
+  --duo-blue: #1CB0F6;
+  --duo-blue-dark: #1899D6;
+  --duo-red: #FF4B4B;
+  --duo-red-dark: #EA2B2B;
+  --duo-orange: #FF9600;
+  --duo-orange-dark: #E68600;
+  --duo-yellow: #FFC800;
+  --duo-purple: #CE82FF;
+  
+  /* 中性色 */
+  --duo-bg: #F7F7F7;
+  --duo-surface: #FFFFFF;
+  --duo-border: #E5E5E5;
+  --duo-text: #3C3C3C;
+  --duo-text-secondary: #777777;
+  --duo-text-light: #AFAFAF;
+
+  /* 保留旧变量兼容性 */
+  --clay-primary: #58CC02;
+  --clay-pink: #FF9600;
+  --clay-mint: #58CC02;
+  --clay-amber: #FF9600;
+  --clay-gold: #FFC800;
+  --clay-text: #3C3C3C;
+  --clay-text-muted: #777777;
+  --clay-bg-start: #F7F7F7;
+  --clay-bg-end: #F7F7F7;
 }
 
 * {
@@ -25,8 +47,8 @@ body {
   min-height: 100vh;
   user-select: none;
   overflow-x: hidden;
-  background: linear-gradient(160deg, var(--clay-bg-start) 0%, #FFF0F5 30%, var(--clay-bg-end) 70%, #E8F4FD 100%);
-  color: var(--clay-text);
+  background: var(--duo-bg);
+  color: var(--duo-text);
 }
 
 /* ============ 字体 ============ */
@@ -34,127 +56,143 @@ body {
   font-family: 'Fredoka', 'Noto Sans SC', sans-serif;
 }
 
-/* ============ 粘土风按钮 ============ */
-.btn-kid {
-  @apply px-8 py-4 rounded-3xl text-xl font-bold transition-all duration-200;
-  min-height: 52px;
-  min-width: 52px;
+/* ============ 多邻国风格 3D 按钮 ============ */
+.btn-duo {
+  @apply px-6 py-3 rounded-2xl text-base font-bold transition-all duration-100;
+  min-height: 48px;
+  min-width: 48px;
   letter-spacing: 0.02em;
-  border: 3px solid rgba(255, 255, 255, 0.6);
-  box-shadow:
-    6px 6px 14px rgba(0, 0, 0, 0.08),
-    -3px -3px 10px rgba(255, 255, 255, 0.9),
-    inset 0 2px 0 rgba(255, 255, 255, 0.5);
+  border: none;
+  border-bottom: 4px solid var(--duo-green-dark);
+  background: var(--duo-green);
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.btn-duo:hover {
+  filter: brightness(1.05);
+}
+
+.btn-duo:active {
+  border-bottom-width: 0;
+  margin-top: 4px;
+  filter: brightness(0.95);
+}
+
+.btn-duo-secondary {
+  @apply px-6 py-3 rounded-2xl text-base font-bold transition-all duration-100;
+  min-height: 48px;
+  border: 2px solid var(--duo-border);
+  border-bottom: 4px solid var(--duo-border);
+  background: var(--duo-surface);
+  color: var(--duo-text);
+  cursor: pointer;
+}
+
+.btn-duo-secondary:active {
+  border-bottom-width: 2px;
+  margin-top: 2px;
+}
+
+.btn-duo-blue {
+  border-bottom-color: var(--duo-blue-dark);
+  background: var(--duo-blue);
+}
+
+.btn-duo-orange {
+  border-bottom-color: var(--duo-orange-dark);
+  background: var(--duo-orange);
+}
+
+/* 保留旧按钮兼容 */
+.btn-kid {
+  @apply btn-duo;
 }
 
 .btn-kid:active {
-  transform: translateY(2px);
-  box-shadow:
-    2px 2px 6px rgba(0, 0, 0, 0.08),
-    -1px -1px 4px rgba(255, 255, 255, 0.6),
-    inset 0 2px 4px rgba(0, 0, 0, 0.06);
+  border-bottom-width: 0;
+  margin-top: 4px;
 }
 
-/* ============ 粘土风卡片 ============ */
+/* ============ 多邻国风格卡片 ============ */
 .clay-card {
   position: relative;
   overflow: hidden;
-  border-radius: 28px;
-  border: 3px solid rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(12px);
-  box-shadow:
-    8px 8px 20px rgba(124, 106, 239, 0.08),
-    -4px -4px 12px rgba(255, 255, 255, 0.95),
-    inset 0 2px 0 rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  border: 2px solid var(--duo-border);
+  background: var(--duo-surface);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .clay-card-accent {
   position: relative;
   overflow: hidden;
-  border-radius: 24px;
-  border: 3px solid rgba(255, 255, 255, 0.5);
-  background: linear-gradient(135deg, rgba(124, 106, 239, 0.08), rgba(255, 143, 171, 0.08));
-  backdrop-filter: blur(8px);
-  box-shadow:
-    6px 6px 16px rgba(124, 106, 239, 0.06),
-    -3px -3px 10px rgba(255, 255, 255, 0.9),
-    inset 0 2px 0 rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  border: 2px solid var(--duo-border);
+  background: linear-gradient(135deg, rgba(88, 204, 2, 0.05), rgba(28, 176, 246, 0.05));
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* ============ 粘土风标签 ============ */
+/* ============ 多邻国风格标签 ============ */
 .clay-tag {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  border-radius: 9999px;
-  border: 2px solid rgba(124, 106, 239, 0.2);
-  background: linear-gradient(135deg, rgba(124, 106, 239, 0.1), rgba(255, 143, 171, 0.08));
-  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--duo-green-light);
+  padding: 0.35rem 0.75rem;
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--clay-primary);
+  color: var(--duo-green-dark);
 }
 
-/* ============ 粘土风统计卡片 ============ */
+/* ============ 多邻国风格统计卡片 ============ */
 .clay-stat {
-  border-radius: 22px;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  background: rgba(255, 255, 255, 0.55);
+  border-radius: 12px;
+  border: 2px solid var(--duo-border);
+  background: var(--duo-surface);
   padding: 1rem;
-  box-shadow:
-    4px 4px 10px rgba(0, 0, 0, 0.04),
-    -2px -2px 8px rgba(255, 255, 255, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-/* ============ 粘土风进度条 ============ */
+/* ============ 多邻国风格进度条 ============ */
 .clay-progress-track {
   overflow: hidden;
   border-radius: 9999px;
-  background: rgba(124, 106, 239, 0.1);
-  height: 12px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+  background: var(--duo-border);
+  height: 16px;
+  border: none;
 }
 
 .clay-progress-fill {
   height: 100%;
   border-radius: 9999px;
-  background: linear-gradient(90deg, #7C6AEF, #FF8FAB, #FFB347);
-  box-shadow: 0 2px 8px rgba(124, 106, 239, 0.3);
+  background: linear-gradient(90deg, var(--duo-green), #7CD81A);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.1);
 }
 
-/* ============ 粘土风轮廓卡片 ============ */
+/* ============ 多邻国风格轮廓卡片 ============ */
 .clay-outline {
-  border-radius: 22px;
-  border: 2px solid rgba(124, 106, 239, 0.12);
-  background: rgba(255, 255, 255, 0.45);
-  box-shadow:
-    3px 3px 8px rgba(0, 0, 0, 0.03),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  border: 2px solid var(--duo-border);
+  background: var(--duo-surface);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 /* ============ 场景背景 ============ */
 .scene-bg {
-  background: linear-gradient(160deg, var(--clay-bg-start) 0%, #FFF0F5 30%, var(--clay-bg-end) 70%, #E8F4FD 100%);
-  background-attachment: fixed;
+  background: var(--duo-bg);
   min-height: 100vh;
   position: relative;
 }
 
-/* ============ 装饰泡泡 ============ */
+/* ============ 装饰泡泡（多邻国风格简化） ============ */
 .clay-bubble {
-  position: absolute;
-  border-radius: 9999px;
-  pointer-events: none;
-  opacity: 0.4;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  box-shadow:
-    inset 0 -4px 8px rgba(0, 0, 0, 0.03),
-    0 4px 12px rgba(0, 0, 0, 0.04);
+  display: none; /* 多邻国风格不使用装饰泡泡 */
 }
 
 /* ============ 隐藏滚动条 ============ */

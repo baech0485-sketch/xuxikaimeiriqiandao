@@ -135,7 +135,7 @@ export default function PetDisplay({
           >
             <motion.div
               className={`absolute inset-0 -m-8 rounded-full blur-3xl ${
-                mood === 'happy' ? 'bg-clay-gold-light' : mood === 'hungry' ? 'bg-clay-amber-light' : 'bg-gray-100'
+                mood === 'happy' ? 'bg-duo-green-light' : mood === 'hungry' ? 'bg-duo-orange/20' : 'bg-gray-100'
               }`}
               animate={{ opacity: [0.3, 0.5, 0.3], scale: [0.95, 1.05, 0.95] }}
               transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
@@ -306,16 +306,16 @@ export default function PetDisplay({
         )}
       </AnimatePresence>
 
-      <p className="font-display text-xl font-bold text-clay-text">{petName}</p>
+      <p className="font-display text-xl font-bold text-duo-text">{petName}</p>
 
       {mood !== 'runaway' && (
         <motion.div
-          className="relative rounded-2xl border-2 border-white/50 bg-white/50 px-4 py-2 shadow-clay-sm"
+          className="relative rounded-xl border-2 border-duo-border bg-duo-surface px-4 py-2"
           animate={isTapped ? { scale: [1, 1.08, 1] } : {}}
           transition={{ duration: 0.3 }}
         >
-          <div className="absolute -top-1.5 left-1/2 h-0 w-0 -translate-x-1/2 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-white/50" />
-          <p className="text-center text-xs font-semibold text-clay-text-muted">
+          <div className="absolute -top-1.5 left-1/2 h-0 w-0 -translate-x-1/2 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[6px] border-b-duo-border" />
+          <p className="text-center text-xs font-semibold text-duo-text-secondary">
             {isTapped ? '嘻嘻~好痒呀！' : isEating ? '好好吃呀~谢谢你喂我！' : moodInfo.message}
           </p>
         </motion.div>

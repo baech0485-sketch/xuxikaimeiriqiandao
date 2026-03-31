@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import BottomNav from '@/components/BottomNav'
 
 export const metadata: Metadata = {
   title: '小宠伴学',
@@ -11,6 +12,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: '#58CC02',
 }
 
 export default function RootLayout({
@@ -24,8 +26,9 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
       </head>
-      <body className="font-body antialiased">
+      <body className="font-body antialiased bg-duo-bg pb-20">
         {children}
+        <BottomNav />
       </body>
     </html>
   )

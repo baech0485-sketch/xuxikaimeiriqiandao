@@ -98,20 +98,26 @@ export default function WeekCalendar({
 
   return (
     <div className="clay-card p-5 md:p-6">
-      <div className="mb-5 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <div className="clay-tag mb-3">Weekly</div>
-          <h3 className="font-display text-2xl font-bold text-clay-text">本周记录</h3>
-          <p className="mt-2 text-sm text-clay-text-muted">完成整天任务即可收集一颗星星！</p>
+      {/* 标题区域 */}
+      <div className="mb-5 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-duo-orange/10 text-xl">
+            &#128293;
+          </div>
+          <div>
+            <h3 className="font-display text-lg font-bold text-duo-text">本周记录</h3>
+            <p className="text-sm text-duo-text-secondary">完成每日任务收集星星</p>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 rounded-full border-2 border-clay-mint/20 bg-clay-mint-light px-4 py-2 text-sm font-bold text-clay-mint">
-          <span>&#11088;</span>
-          <span>{fullCount} 天达标</span>
+        <div className="flex items-center gap-1.5 rounded-full bg-duo-yellow/20 px-3 py-1.5">
+          <span className="text-base">&#11088;</span>
+          <span className="text-sm font-bold text-duo-text">{fullCount}</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-7">
+      {/* 周历格子 */}
+      <div className="grid grid-cols-7 gap-2">
         {days.map((day, idx) => {
           const isFull = day.status === 'full'
           const isPartial = day.status === 'partial'
@@ -119,90 +125,90 @@ export default function WeekCalendar({
           const progress = day.totalTasks > 0 ? Math.round((day.doneCount / day.totalTasks) * 100) : 0
 
           return (
-            <motion.div
+            <motion.button
               key={day.date}
-              className={`relative overflow-hidden rounded-[24px] border-2 px-4 py-4 ${
+              type="button"
+              disabled={isFuture || day.starCollected || !isFull}
+              className={`relative flex flex-col items-center rounded-xl p-2 transition-all ${
                 day.isToday
-                  ? 'border-clay-primary/35 bg-clay-primary-light/50 shadow-clay-sm'
-                  : isFull
-                    ? 'border-clay-gold/30 bg-clay-gold-light/50 shadow-clay-sm'
-                    : 'border-white/50 bg-white/40'
-              }`}
-              initial={{ opacity: 0, y: 12 }}
+                  ? 'border-2 border-duo-green bg-duo-green-light'
+                  : isFull && !day.starCollected
+                    ? 'border-2 border-duo-yellow bg-duo-yellow/10 cursor-pointer hover:bg-duo-yellow/20'
+                    : isFull && day.starCollected
+                      ? 'border-2 border-duo-green/30 bg-duo-green-light/50'
+                      : isPartial
+                        ? 'border-2 border-duo-orange/30 bg-duo-orange/5'
+                        : 'border-2 border-duo-border bg-duo-surface'
+              } ${isFuture ? 'opacity-40' : ''}`}
+              onClick={event => {
+                if (isFull && !day.starCollected && onCollectStar) {
+                  onCollectStar(event.currentTarget.getBoundingClientRect(), day.date)
+                }
+              }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.04, duration: 0.3 }}
+              transition={{ delay: idx * 0.03, duration: 0.2 }}
             >
-              <div className="mb-4 flex items-center justify-between">
-                <span className={`text-xs font-bold uppercase tracking-widest ${day.isToday ? 'text-clay-primary' : 'text-clay-text-muted'}`}>
-                  周{day.label}
-                </span>
-                <span className="font-display text-xl font-bold text-clay-text">{day.dayNum}</span>
-              </div>
+              {/* 星期标签 */}
+              <span className={`text-xs font-bold ${
+                day.isToday ? 'text-duo-green' : 'text-duo-text-secondary'
+              }`}>
+                {day.label}
+              </span>
 
-              {isFull ? (
-                <button
-                  type="button"
-                  className={`relative flex w-full flex-col items-start rounded-[20px] border-2 px-4 py-4 text-left transition ${
-                    day.starCollected
-                      ? 'border-clay-mint/30 bg-clay-mint-light/60'
-                      : 'cursor-pointer border-clay-gold/30 bg-clay-gold-light hover:border-clay-gold/50 hover:shadow-clay-sm'
-                  }`}
-                  onClick={event => {
-                    if (day.starCollected || !onCollectStar) return
-                    onCollectStar(event.currentTarget.getBoundingClientRect(), day.date)
-                  }}
-                >
-                  {!day.starCollected && (
-                    <motion.span
-                      className="absolute right-3 top-2 text-xs text-clay-gold"
-                      animate={{ opacity: [0.25, 0.9, 0.25], scale: [0.8, 1.08, 0.8] }}
-                      transition={{ repeat: Infinity, duration: 2, delay: idx * 0.1 }}
+              {/* 日期数字 */}
+              <span className={`mt-1 font-display text-lg font-bold ${
+                day.isToday ? 'text-duo-green' : isFull ? 'text-duo-text' : 'text-duo-text-secondary'
+              }`}>
+                {day.dayNum}
+              </span>
+
+              {/* 状态指示器 */}
+              <div className="mt-1.5 flex h-6 w-6 items-center justify-center">
+                {isFull ? (
+                  day.starCollected ? (
+                    <span className="text-lg text-duo-green">&#10003;</span>
+                  ) : (
+                    <motion.span 
+                      className="text-lg"
+                      animate={{ scale: [1, 1.15, 1] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
                     >
-                      &#10024;
+                      &#11088;
                     </motion.span>
-                  )}
-                  <span className="text-xs font-bold uppercase tracking-widest text-clay-text-muted">
-                    {day.starCollected ? '已收集' : '待领取'}
-                  </span>
-                  <span className="mt-3 text-3xl">{day.starCollected ? '&#10003;' : '&#11088;'}</span>
-                  <span className="mt-3 text-sm font-bold text-clay-text">{day.starCollected ? '星星已收集' : '点击收集星星'}</span>
-                </button>
-              ) : isPartial ? (
-                <div className="rounded-[20px] border-2 border-clay-amber/20 bg-clay-amber-light/40 px-4 py-4">
-                  <div className="mb-3 flex items-center justify-between text-sm font-bold text-clay-text-muted">
-                    <span>进行中</span>
-                    <span>{day.doneCount}/{day.totalTasks}</span>
-                  </div>
-                  <div className="clay-progress-track h-2.5">
-                    <motion.div
-                      className="clay-progress-fill"
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progress}%` }}
-                      transition={{ duration: 0.6, ease: 'easeOut' }}
+                  )
+                ) : isPartial ? (
+                  <div className="h-1.5 w-full max-w-[20px] rounded-full bg-duo-border overflow-hidden">
+                    <div 
+                      className="h-full rounded-full bg-duo-orange"
+                      style={{ width: `${progress}%` }}
                     />
                   </div>
-                  <p className="mt-3 text-xs text-clay-text-muted">继续加油，今天还有任务可以完成！</p>
-                </div>
-              ) : isFuture ? (
-                <div className="rounded-[20px] border-2 border-dashed border-white/40 bg-white/20 px-4 py-4 text-sm text-clay-text-light">
-                  还没到哦
-                </div>
-              ) : (
-                <div className="rounded-[20px] border-2 border-dashed border-white/40 bg-white/20 px-4 py-4 text-sm text-clay-text-light">
-                  尚未开始
-                </div>
-              )}
-
-              {day.isToday && (
-                <motion.div
-                  className="pointer-events-none absolute inset-0 rounded-[24px] border-2 border-clay-primary/30"
-                  animate={{ opacity: [0.35, 0.8, 0.35] }}
-                  transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
-                />
-              )}
-            </motion.div>
+                ) : isFuture ? (
+                  <span className="text-duo-text-light">-</span>
+                ) : (
+                  <span className="h-2 w-2 rounded-full bg-duo-border" />
+                )}
+              </div>
+            </motion.button>
           )
         })}
+      </div>
+
+      {/* 图例 */}
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs text-duo-text-secondary">
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm">&#11088;</span>
+          <span>可收集</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm text-duo-green">&#10003;</span>
+          <span>已收集</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <div className="h-1.5 w-4 rounded-full bg-duo-orange" />
+          <span>进行中</span>
+        </div>
       </div>
     </div>
   )
