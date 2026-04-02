@@ -4,6 +4,9 @@ import User from '@/lib/models/User'
 import DailyRecord from '@/lib/models/DailyRecord'
 import { getTodayStr } from '@/lib/petLogic'
 
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+
 export async function GET() {
   await dbConnect()
   const user = await User.findOne().sort({ createdAt: -1 })

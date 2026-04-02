@@ -15,6 +15,7 @@ export const TASKS = [
   { key: 'reading', name: '读书', emoji: '📖', food: '🍇', foodName: '葡萄' },
   { key: 'drawing', name: '画画', emoji: '🎨', food: '🍬', foodName: '糖果' },
   { key: 'skipping', name: '跳绳', emoji: '🤸', food: '🍌', foodName: '香蕉' },
+  { key: 'cycling', name: '骑自行车', emoji: '🚲', food: '🍹', foodName: '果汁' },
   { key: 'english', name: '学英语', emoji: '🔤', food: '🧁', foodName: '杯子蛋糕' },
 ] as const
 
