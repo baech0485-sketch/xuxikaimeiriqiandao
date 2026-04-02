@@ -98,6 +98,61 @@ function applyOptimisticStarCollection(user: UserData | null) {
   }
 }
 
+function applyOptimisticFeed(
+  record: DailyRecordData | null,
+  user: UserData | null,
+  taskKey: string,
+) {
+  if (!record || !user || record.fedTasks.includes(taskKey) || !record.tasks[taskKey]?.done) {
+    return { nextRecord: record, nextUser: user }
+  }
+
+  const nextFedTasks = [...record.fedTasks, taskKey]
+  const nextRecord: DailyRecordData = {
+    ...record,
+    fedTasks: nextFedTasks,
+    fedCount: nextFedTasks.length,
+  }
+
+  let nextUser: UserData = user
+
+  if (user.pet.mood === 'runaway') {
+    const shouldAdvanceRecall = record.allCompleted && nextRecord.fedCount === 1
+    const nextRecallProgress = shouldAdvanceRecall ? (user.pet.recallProgress || 0) + 1 : (user.pet.recallProgress || 0)
+
+    if (nextRecallProgress >= 3) {
+      nextUser = {
+        ...user,
+        pet: {
+          ...user.pet,
+          mood: 'happy',
+          hungryDays: 0,
+          recallProgress: 0,
+        },
+      }
+    } else if (shouldAdvanceRecall) {
+      nextUser = {
+        ...user,
+        pet: {
+          ...user.pet,
+          recallProgress: nextRecallProgress,
+        },
+      }
+    }
+  } else {
+    nextUser = {
+      ...user,
+      pet: {
+        ...user.pet,
+        mood: 'happy',
+        hungryDays: 0,
+      },
+    }
+  }
+
+  return { nextRecord, nextUser }
+}
+
 export default function Home() {
   const router = useRouter()
   const [user, setUser] = useState<UserData | null>(null)
@@ -168,14 +223,26 @@ export default function Home() {
   const handleFeed = async (taskKey: string, foodEmoji: string) => {
     setFeedingFood(foodEmoji)
     setFeedingAnim(true)
-    const res = await fetch('/api/pet/feed', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ taskKey }),
-    })
-    const data = await res.json()
-    if (data.user) setUser(data.user)
-    if (data.record) setRecord(data.record)
+    const previousRecord = record
+    const previousUser = user
+    const { nextRecord, nextUser } = applyOptimisticFeed(record, user, taskKey)
+    if (nextRecord) setRecord(nextRecord)
+    if (nextUser) setUser(nextUser)
+
+    try {
+      const res = await fetch('/api/pet/feed', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ taskKey }),
+      })
+      const data = await res.json()
+      if (data.user) setUser(data.user)
+      if (data.record) setRecord(data.record)
+    } catch (error) {
+      console.error('投喂失败', error)
+      setRecord(previousRecord)
+      setUser(previousUser)
+    }
     setTimeout(() => setFeedingAnim(false), 2000)
   }
 
