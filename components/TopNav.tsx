@@ -16,6 +16,7 @@ interface TopNavProps {
 export default function TopNav({
   totalStars,
   streak,
+  childName,
   starBounce,
   completedCount,
   dailyGoal,
@@ -35,7 +36,9 @@ export default function TopNav({
               </svg>
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-display text-xl font-bold text-duo-text">小宠伴学</h1>
+              <h1 className="font-display text-xl font-bold text-duo-text">
+                {childName ? `${childName} 小宠伴学` : '徐熙凯 小宠伴学'}
+              </h1>
             </div>
           </div>
 
