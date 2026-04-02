@@ -11,8 +11,7 @@ interface FoodTrayProps {
 }
 
 export default function FoodTray({ tasksDone, fedTasks, onFeed, petMood }: FoodTrayProps) {
-  if (petMood === 'runaway') return null
-
+  const isRunaway = petMood === 'runaway'
   const availableFoods = TASKS.filter(t => tasksDone[t.key] && !fedTasks.includes(t.key))
   const hasFoods = availableFoods.length > 0
 
@@ -63,7 +62,13 @@ export default function FoodTray({ tasksDone, fedTasks, onFeed, petMood }: FoodT
         })}
       </div>
       <span className="text-xs font-bold text-duo-text-secondary">
-        {hasFoods ? `${availableFoods.length} 份食物可投喂` : '完成任务获得食物'}
+        {isRunaway
+          ? hasFoods
+            ? `${availableFoods.length} 份食物可投喂，完成全部任务后可投喂召回`
+            : '完成全部任务后可投喂召回'
+          : hasFoods
+            ? `${availableFoods.length} 份食物可投喂`
+            : '完成任务获得食物'}
       </span>
     </div>
   )

@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
   record.fedCount = fedTasks.length
 
   if (user.pet.mood === 'runaway') {
-    if (record.allCompleted) {
+    if (record.allCompleted && record.fedCount === 1) {
       user.pet.recallProgress = (user.pet.recallProgress || 0) + 1
       if (user.pet.recallProgress >= 3) {
         user.pet.mood = 'happy'
