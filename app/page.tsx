@@ -242,6 +242,7 @@ export default function Home() {
   const completedCount = record ? TASKS.filter(task => record.tasks[task.key]?.done).length : 0
   const canFeedCount = record ? completedCount - record.fedCount : 0
   const goalReached = completedCount >= DAILY_GOAL
+  const optimisticFullDates = record?.allCompleted ? [record.date] : []
 
   return (
     <main className="min-h-[100dvh] bg-duo-bg">
@@ -387,6 +388,7 @@ export default function Home() {
               refreshKey={completedCount + weekRefresh}
               onCollectStar={handleCollectStar}
               optimisticCollectedDates={optimisticCollectedDates}
+              optimisticFullDates={optimisticFullDates}
             />
 
             {/* 提示卡片 */}

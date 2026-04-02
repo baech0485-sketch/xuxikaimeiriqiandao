@@ -52,10 +52,12 @@ export default function WeekCalendar({
   refreshKey,
   onCollectStar,
   optimisticCollectedDates = [],
+  optimisticFullDates = [],
 }: {
   refreshKey?: number
   onCollectStar?: (rect: DOMRect, date: string) => void
   optimisticCollectedDates?: string[]
+  optimisticFullDates?: string[]
 }) {
   const [records, setRecords] = useState<DayRecord[]>([])
 
@@ -79,6 +81,7 @@ export default function WeekCalendar({
 
   const days: WeekDay[] = weekDates.map((dateStr, i) => {
     const record = records.find(r => r.date === dateStr)
+    const isOptimisticFull = optimisticFullDates.includes(dateStr)
     let status: WeekDay['status'] = 'none'
     let doneCount = 0
     let starCollected = false
@@ -89,7 +92,9 @@ export default function WeekCalendar({
     } else if (record) {
       doneCount = Object.values(record.tasks || {}).filter(task => task?.done).length
       starCollected = Boolean(record.starCollected) || optimisticCollectedDates.includes(dateStr)
-      status = record.allCompleted ? 'full' : doneCount > 0 ? 'partial' : 'none'
+      status = (record.allCompleted || isOptimisticFull) ? 'full' : doneCount > 0 ? 'partial' : 'none'
+    } else if (isOptimisticFull) {
+      status = 'full'
     } else if (optimisticCollectedDates.includes(dateStr)) {
       starCollected = true
       status = 'full'
