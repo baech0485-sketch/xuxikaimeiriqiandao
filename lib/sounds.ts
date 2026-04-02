@@ -1,5 +1,19 @@
 let audioCtx: AudioContext | null = null
 
+const SOUND_LEVELS = {
+  completePrimary: 0.4,
+  completeSecondary: 0.34,
+  celebrationMain: 0.3,
+  celebrationMid: 0.28,
+  celebrationHigh: 0.3,
+  celebrationAccent: 0.16,
+  petTapPrimary: 0.22,
+  petTapSecondary: 0.18,
+  collectPrimary: 0.24,
+  collectSecondary: 0.24,
+  collectAccent: 0.3,
+} as const
+
 function getCtx(): AudioContext {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
@@ -37,8 +51,8 @@ export function playCompleteSound() {
   try {
     const ctx = getCtx()
     const t = ctx.currentTime
-    tone(523, 0.15, t, 0.25, 'sine')        // C5
-    tone(659, 0.28, t + 0.12, 0.2, 'sine')  // E5
+    tone(523, 0.15, t, SOUND_LEVELS.completePrimary, 'sine')        // C5
+    tone(659, 0.28, t + 0.12, SOUND_LEVELS.completeSecondary, 'sine')  // E5
   } catch { /* 静默降级 */ }
 }
 
@@ -47,11 +61,11 @@ export function playCelebrationSound() {
   try {
     const ctx = getCtx()
     const t = ctx.currentTime
-    tone(523, 0.15, t, 0.2, 'sine')              // C5
-    tone(659, 0.15, t + 0.1, 0.2, 'sine')        // E5
-    tone(784, 0.15, t + 0.2, 0.22, 'sine')       // G5
-    tone(1047, 0.45, t + 0.3, 0.25, 'sine')      // C6（延长）
-    tone(1319, 0.35, t + 0.35, 0.1, 'triangle')  // E6 闪光音
+    tone(523, 0.15, t, SOUND_LEVELS.celebrationMain, 'sine')              // C5
+    tone(659, 0.15, t + 0.1, SOUND_LEVELS.celebrationMid, 'sine')        // E5
+    tone(784, 0.15, t + 0.2, SOUND_LEVELS.celebrationHigh, 'sine')       // G5
+    tone(1047, 0.45, t + 0.3, SOUND_LEVELS.celebrationHigh, 'sine')      // C6（延长）
+    tone(1319, 0.35, t + 0.35, SOUND_LEVELS.celebrationAccent, 'triangle')  // E6 闪光音
   } catch { /* 静默降级 */ }
 }
 
@@ -60,8 +74,8 @@ export function playPetTapSound() {
   try {
     const ctx = getCtx()
     const t = ctx.currentTime
-    tone(880, 0.08, t, 0.15, 'sine')       // A5 短促
-    tone(1175, 0.12, t + 0.06, 0.12, 'triangle') // D6 尾音
+    tone(880, 0.08, t, SOUND_LEVELS.petTapPrimary, 'sine')       // A5 短促
+    tone(1175, 0.12, t + 0.06, SOUND_LEVELS.petTapSecondary, 'triangle') // D6 尾音
   } catch { /* 静默降级 */ }
 }
 
@@ -70,8 +84,8 @@ export function playCollectSound() {
   try {
     const ctx = getCtx()
     const t = ctx.currentTime
-    tone(659, 0.1, t, 0.18, 'sine')        // E5
-    tone(880, 0.1, t + 0.08, 0.18, 'sine') // A5
-    tone(1175, 0.2, t + 0.16, 0.22, 'triangle') // D6 叮
+    tone(659, 0.1, t, SOUND_LEVELS.collectPrimary, 'sine')        // E5
+    tone(880, 0.1, t + 0.08, SOUND_LEVELS.collectSecondary, 'sine') // A5
+    tone(1175, 0.2, t + 0.16, SOUND_LEVELS.collectAccent, 'triangle') // D6 叮
   } catch { /* 静默降级 */ }
 }
