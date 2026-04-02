@@ -35,6 +35,69 @@ interface DailyRecordData {
   allCompleted: boolean
 }
 
+function getCurrentTimeLabel() {
+  const now = new Date()
+  return `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+}
+
+function getCompletedTaskCount(tasks: Record<string, TaskStatus>) {
+  return TASKS.filter(task => tasks[task.key]?.done).length
+}
+
+function applyOptimisticTaskCompletion(
+  record: DailyRecordData | null,
+  user: UserData | null,
+  taskKey: string,
+) {
+  if (!record || !user || record.tasks[taskKey]?.done) {
+    return { nextRecord: record, nextUser: user, allDone: Boolean(record?.allCompleted) }
+  }
+
+  const nextTasks = {
+    ...record.tasks,
+    [taskKey]: {
+      done: true,
+      completedAt: getCurrentTimeLabel(),
+    },
+  }
+
+  const allDone = getCompletedTaskCount(nextTasks) >= DAILY_GOAL
+  const nextRecord: DailyRecordData = {
+    ...record,
+    tasks: nextTasks,
+    allCompleted: record.allCompleted || allDone,
+  }
+
+  if (!allDone || record.allCompleted) {
+    return { nextRecord, nextUser: user, allDone }
+  }
+
+  const nextStreak = user.stats.streak + 1
+  const nextUser: UserData = {
+    ...user,
+    stats: {
+      ...user.stats,
+      totalDays: user.stats.totalDays + 1,
+      streak: nextStreak,
+      maxStreak: Math.max(user.stats.maxStreak, nextStreak),
+    },
+  }
+
+  return { nextRecord, nextUser, allDone }
+}
+
+function applyOptimisticStarCollection(user: UserData | null) {
+  if (!user) return user
+
+  return {
+    ...user,
+    stats: {
+      ...user.stats,
+      totalStars: user.stats.totalStars + 1,
+    },
+  }
+}
+
 export default function Home() {
   const router = useRouter()
   const [user, setUser] = useState<UserData | null>(null)
@@ -47,6 +110,7 @@ export default function Home() {
   const [flyingHeart, setFlyingHeart] = useState<{ sx: number; sy: number; tx: number; ty: number } | null>(null)
   const [starBounce, setStarBounce] = useState(false)
   const [weekRefresh, setWeekRefresh] = useState(0)
+  const [optimisticCollectedDates, setOptimisticCollectedDates] = useState<string[]>([])
 
   const loadData = useCallback(async () => {
     try {
@@ -75,16 +139,30 @@ export default function Home() {
   }, [loadData])
 
   const handleCompleteTask = async (taskKey: string) => {
-    const res = await fetch('/api/daily', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ taskKey }),
-    })
-    const data = await res.json()
-    if (data.record) setRecord(data.record)
-    if (data.user) setUser(data.user)
-    if (data.allDone) setTimeout(() => setShowCelebration(true), 500)
     setConfirmTask(null)
+    const previousRecord = record
+    const previousUser = user
+    const { nextRecord, nextUser, allDone } = applyOptimisticTaskCompletion(record, user, taskKey)
+
+    if (nextRecord) setRecord(nextRecord)
+    if (nextUser) setUser(nextUser)
+    if (allDone) setShowCelebration(true)
+
+    try {
+      const res = await fetch('/api/daily', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ taskKey }),
+      })
+      const data = await res.json()
+      if (data.record) setRecord(data.record)
+      if (data.user) setUser(data.user)
+      if (data.allDone) setShowCelebration(true)
+    } catch (error) {
+      console.error('任务完成失败', error)
+      setRecord(previousRecord)
+      setUser(previousUser)
+    }
   }
 
   const handleFeed = async (taskKey: string, foodEmoji: string) => {
@@ -103,7 +181,7 @@ export default function Home() {
 
   const handleCollectStar = useCallback(async (sourceRect: DOMRect, date: string) => {
     const target = document.getElementById('star-counter')
-    if (!target) return
+    if (!target || optimisticCollectedDates.includes(date)) return
 
     const targetRect = target.getBoundingClientRect()
     playCollectSound()
@@ -113,22 +191,30 @@ export default function Home() {
       tx: targetRect.left + targetRect.width / 2,
       ty: targetRect.top + targetRect.height / 2,
     })
+    const previousUser = user
 
-    const res = await fetch('/api/daily/collect', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ date }),
-    })
-    const data = await res.json()
-    if (data.user) setUser(data.user)
+    setOptimisticCollectedDates(prev => [...prev, date])
+    setUser(prev => applyOptimisticStarCollection(prev))
+    setStarBounce(true)
+    setTimeout(() => setStarBounce(false), 600)
+    setTimeout(() => setFlyingHeart(null), 650)
 
-    setTimeout(() => {
-      setStarBounce(true)
-      setFlyingHeart(null)
+    try {
+      const res = await fetch('/api/daily/collect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date }),
+      })
+      const data = await res.json()
+      if (data.user) setUser(data.user)
       setWeekRefresh(prev => prev + 1)
-      setTimeout(() => setStarBounce(false), 600)
-    }, 650)
-  }, [])
+    } catch (error) {
+      console.error('收集星星失败', error)
+      setUser(previousUser)
+      setOptimisticCollectedDates(prev => prev.filter(item => item !== date))
+      setFlyingHeart(null)
+    }
+  }, [optimisticCollectedDates, user])
 
   if (loading) {
     return (
@@ -297,7 +383,11 @@ export default function Home() {
             </div>
 
             {/* 本周记录 */}
-            <WeekCalendar refreshKey={completedCount + weekRefresh} onCollectStar={handleCollectStar} />
+            <WeekCalendar
+              refreshKey={completedCount + weekRefresh}
+              onCollectStar={handleCollectStar}
+              optimisticCollectedDates={optimisticCollectedDates}
+            />
 
             {/* 提示卡片 */}
             <div className="clay-card p-5">

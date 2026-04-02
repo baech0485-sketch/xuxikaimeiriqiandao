@@ -51,9 +51,11 @@ function getWeekDates(mondayStr: string): string[] {
 export default function WeekCalendar({
   refreshKey,
   onCollectStar,
+  optimisticCollectedDates = [],
 }: {
   refreshKey?: number
   onCollectStar?: (rect: DOMRect, date: string) => void
+  optimisticCollectedDates?: string[]
 }) {
   const [records, setRecords] = useState<DayRecord[]>([])
 
@@ -86,8 +88,11 @@ export default function WeekCalendar({
       status = 'future'
     } else if (record) {
       doneCount = Object.values(record.tasks || {}).filter(task => task?.done).length
-      starCollected = Boolean(record.starCollected)
+      starCollected = Boolean(record.starCollected) || optimisticCollectedDates.includes(dateStr)
       status = record.allCompleted ? 'full' : doneCount > 0 ? 'partial' : 'none'
+    } else if (optimisticCollectedDates.includes(dateStr)) {
+      starCollected = true
+      status = 'full'
     }
 
     const dayNum = new Date(`${dateStr}T00:00:00Z`).getUTCDate()
